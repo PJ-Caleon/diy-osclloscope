@@ -1,4 +1,12 @@
 /* @TODO(M1-02/5) Line 1: ENTRY(Reset_Handler). Then fill the two MEMORY lines (FLASH rx at 0x08000000, 32K; RAM rwx at 0x20000000, 10K). [src: M1-02 step 5] */
+
+ENTRY(Reset_Handler)
+MEMORY
+{
+  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 32K
+  RAM  (rwx) : ORIGIN = 0x20000000, LENGTH = 10K
+}
+
 /* @TODO(M1-02/6) _estack = the first address AFTER RAM = ORIGIN(RAM) + LENGTH(RAM). [src: M1-02 step 6] */
 
 SECTIONS
