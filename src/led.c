@@ -2,7 +2,6 @@
 #include "led.h"
 #include "drills.h"
 
-/* @TODO(M1-01/9) led_init: card C4 (clock, pin, configure). Enable the GPIOC clock, drive the pin high (LED off), set PC13 to nibble 0x2. [src: M1-01 step 9, cards C2+C4] */
 void led_init(void)
 {
   RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
@@ -10,16 +9,28 @@ void led_init(void)
   gpio_cfg(GPIOC,LED_PIN,0x2u);
 }
 
-/* @TODO(M1-01/10) led_on / led_off: one BSRR write each. Low half sets, high half clears: pin n low = bit (n+16). [src: M1-01 step 10] */
 void led_on(void)
 {
+  // 0x20000000
+  GPIOC->BSRR = BIT(LED_PIN + 16u);
 }
 
 void led_off(void)
 {
+  // 0x00002000
+  GPIOC->BSRR = BIT(LED_PIN);
 }
 
 /* @TODO(M1-01/11) led_toggle: read the pin in ODR; if it is high call led_on(), else led_off(). [src: M1-01 step 11] */
 void led_toggle(void)
 {
+  // ODR reads pin 
+  // since PC13 is active high 
+  // If Port C is 1 and Pin is 1 (off), set to on 
+  // If Port C is 1 and Pin is 0 (on), set to off 
+  if (GPIOC->ODR & BIT(LED_PIN)){
+    led_on();
+  } else{
+    led_off();
+  }
 }

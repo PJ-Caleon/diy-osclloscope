@@ -18,7 +18,6 @@ unsigned pin_shift(unsigned pin)
   return (pin % 8u) * 4u; 
 }
 
-/* @TODO(M1-01/8) gpio_cfg: card C2. Pick CRL (pin < 8) or CRH, then write the nibble with field_set. [src: M1-01 step 8, cards C1+C2] */
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
   // if pin 13, nibble 2
