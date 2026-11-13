@@ -15,5 +15,8 @@ void copy_words(uint32_t *dst, uint32_t *dst_end, const uint32_t *src)
 /* @TODO(M1-02/2) zero_words: walk from start up to end, writing 0 to each word. [src: M1-02 step 2] */
 void zero_words(uint32_t *start, uint32_t *end)
 {
-    (void)start; (void)end;
+  while(start < end){
+    *start = 0u;
+    start++;
+  }
 }
