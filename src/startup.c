@@ -40,7 +40,10 @@ const isr_t vectors[16] = {
 /* @TODO(M1-02/3) Reset_Handler: copy .data from Flash to RAM, zero .bss, call main(). Use copy_words and zero_words with the linker symbols. [src: M1-02 step 3] */
 void Reset_Handler(void)
 {
-    for (;;) { }
+  copt_words(&_sdata, &_edata, &_sidata);
+  zero_words(&_sbss, &_ebss);
+  main();
+  for (;;){}
 }
 
 void Default_Handler(void)
