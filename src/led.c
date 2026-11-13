@@ -25,9 +25,9 @@ void led_off(void)
 void led_toggle(void)
 {
   // ODR reads pin 
-  // since PC13 is active high 
-  // If Port C is 1 and Pin is 1 (off), set to on 
-  // If Port C is 1 and Pin is 0 (on), set to off 
+  // since PC13 is active low 
+  // If Port C is 1 and Pin is LOW (on), set to off 
+  // If Port C is 1 and Pin is HIGH (off), set to on 
   if (GPIOC->ODR & BIT(LED_PIN)){
     led_on();
   } else{
