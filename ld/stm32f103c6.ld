@@ -8,6 +8,7 @@ MEMORY
 }
 
 /* @TODO(M1-02/6) _estack = the first address AFTER RAM = ORIGIN(RAM) + LENGTH(RAM). [src: M1-02 step 6] */
+_estack = ORIGIN(RAM) + LENGTH(RAM);
 
 SECTIONS
 {
