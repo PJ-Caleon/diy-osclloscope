@@ -41,8 +41,7 @@ uint32_t elapsed(uint32_t now, uint32_t start)
 /* @TODO(M1-04/9) reached: card C6. Has the deadline passed? Subtract first, then look at the sign. [src: M1-04 step 9, card C6] */
 int reached(uint32_t now, uint32_t deadline)
 {
-    (void)now; (void)deadline;
-    return 0;
+  return (int32_t)(now - deadline) >= 0;
 }
 
 /* @TODO(M1-05/1) brr_for: USART divisor = pclk / baud, rounded to nearest. [src: M1-05 step 1] */
