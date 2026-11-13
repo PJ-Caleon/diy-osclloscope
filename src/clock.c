@@ -9,7 +9,11 @@ static volatile uint32_t g_ms;
 /* @TODO(M1-04/1) clock_cfgr_word: build the CFGR value with card C1 three times: PLLMUL (shift 18, width 4, value 7), PPRE1 (shift 8, width 3, value 4), ADCPRE (shift 14, width 2, value 2); also OR in RCC_CFGR_PLLSRC_HSE. Do NOT set SW here. [src: M1-04 step 1, card C1] */
 uint32_t clock_cfgr_word(void)
 {
-    return 0;
+  volatile uint32_t w = RCC_CFGR_PLLSRC_HSE; // Assign w to 16 bits 
+  w = field_set(w, RCC_CFGR_PLLMUL_Pos, 4u, 7u); // 8 MHz x9 = 72 MHz 
+  w = field_set(w, RCC_CFGR_PPRE1_Pos, 3u, 4u); // 72/2 = 36 MHz for bus drivers since max is only 48 MHz 
+  w = field_set(w, RCC_CFGR_ADCPRE_Pos, 2u, 2u); // 72/6 = 12 MHz since ADC max is 14 MHz
+  return w;
 }
 
 /* @TODO(M1-04/5) tick_reload: SysTick counts clk/tick_hz ticks, and LOAD holds that minus one. [src: M1-04 step 5] */
