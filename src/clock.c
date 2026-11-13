@@ -34,6 +34,19 @@ int clock_init(void)
   FLASH->ACR = field_set(FLASH->ACR, FLASH_ACR_LATENCY_Pos, 3, 2) | FLASH_ACR_PRFTBE;
 
   /* @TODO(M1-04/4) Write CFGR = clock_cfgr_word(); set PLLON and wait for PLLRDY; then switch SW (shift 0, width 2) to 2 with card C1 and wait for SWS_PLL (bit 3). [src: M1-04 step 4, cards C1+C3] */
+  RCC->CFGR = clock_cfgr_word();
+
+  RCC->CR |= RCC_CR_PLLON;
+  if (wait_flag(&RCC->CR, RCC_CR_PLLRDY, 1, WAIT_TRIES) != 0){
+    return -1;
+  }
+
+  RCC->CFGR = field_set(RCC->CFGR, RCC_CFGR_SWS_PLL, 2, 2);
+  if (wait_flag(&RCC->CFGR, RCC_CFGR_SWS_PLL, 1, WAIT_TRIES) != 0){
+    return -1;
+  }
+
+
   /* @TODO(M1-04/5) SysTick: LOAD = tick_reload(SYSCLK_HZ, 1000), VAL = 0, CTRL = ENABLE | TICKINT | CLKSRC. [src: M1-04 step 5] */
   SYSTICK->LOAD = tick_reload(SYSCLK_HZ, 1000u);
   SYSTICK->VAL = 0u;
