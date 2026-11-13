@@ -26,6 +26,16 @@ SECTIONS
   } > FLASH
 
 /* @TODO(M1-02/8) .data section: lives in RAM but is STORED in FLASH (> RAM AT> FLASH). Mark _sdata at the start and _edata at the end; _sidata = LOADADDR(.data). [src: M1-02 step 8] */
+  _sidata = LOADADDR(.data);
+  .data : 
+  {
+    . = ALIGN(4);
+    _sdata = .;
+    *(.data*)
+    . = ALIGN(4);
+    _edata = .;
+  } > RAM AT> FLASH
+
 
 /* @TODO(M1-02/9) .bss section: RAM only. Mark _sbss at the start and _ebss at the end; include *(.bss*) and *(COMMON). [src: M1-02 step 9] */
 
