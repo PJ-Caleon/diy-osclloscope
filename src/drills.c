@@ -23,8 +23,13 @@ void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 /* @TODO(M1-04/7) wait_flag: card C3. Poll until the bit is in the wanted state; give up after `tries` reads. [src: M1-04 step 7, card C3] */
 int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t tries)
 {
-    (void)reg; (void)mask; (void)want_set; (void)tries;
-    return -1;
+  while (tries--){
+    uint32_t is_set = ((*reg & mask) != 0u);
+    if (is_set == (want_set != 0)){
+      return 0;
+    }
+  }
+  return -1;
 }
 
 /* @TODO(M1-04/8) elapsed: card C6. How many ticks since start? One subtraction, unsigned. [src: M1-04 step 8, card C6] */
