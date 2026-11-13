@@ -11,7 +11,12 @@
 (a table: signal, pin, wire to)
 
 ## Build, test, flash
-(the make commands)
+
+
+```
+make firmware
+make flash
+```
 
 ## How it works
 (one paragraph: trigger, sampling, drawing)
