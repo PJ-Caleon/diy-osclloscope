@@ -30,12 +30,21 @@ test-all:
 # @TODO(M1-02/10) Fill the 5 variables: CROSS = arm-none-eabi-  ; CPU = -mcpu=cortex-m3 -mthumb ; CFLAGS (CPU, -Os -g -std=gnu11 -Wall -Wextra -ffreestanding -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections -Iinclude) ; LDFLAGS (CPU, -nostdlib -T ld/stm32f103c6.ld -Wl,-Map=build/firmware.map -Wl,--gc-sections) ; FW_SRC = every .c file in src/. [src: M1-02 step 10]
 CROSS = arm-none-eabi-
 CPU = -mcpu=cortex-m3 -mthumb
-CFLAGS = $(CPU) -Os -g -std=null -Wall -Wextra -ffreestanding -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections -Iinclude
-LDFLAGS = $(CPU) -nostdlib -T ld/stm32f103c6.ld -Wl, -Map=build/firmware.map -Wl, --gc-sections 
+CFLAGS = $(CPU) -Os -g -std=gnu11 -Wall -Wextra -ffreestanding -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections -Iinclude
+LDFLAGS = $(CPU) -nostdlib -T ld/stm32f103c6.ld -Wl,-Map=build/firmware.map -Wl,--gc-sections
 FW_SRC = $(wildcard src/*.c)
 
 # @TODO(M1-02/11) Write the rule for build/firmware.elf (compile all FW_SRC and link; end the link line with -lgcc), the rule for build/firmware.bin (objcopy -O binary), and the phony targets `firmware` and `size`. [src: M1-02 step 11]
+build/firmware.elf: $(FW_SRC) $(wildcard include/*.h) ld/stm32f103c6.ld 
+	@mkdir -p build
+	$(CROSS)gcc $(CFLAGS) $(FW_SRC) $(LDFLAGS) -lgcc -o $@
 
+build/firmware.bin: build/firmware.elf 
+	$(CROSS)objcopy -O binary $< $@
+
+firmware: build/firmware.elf build/firmware.bin
+size: build/firmware.elf
+	$(CROSS)size $<
 # @TODO(M1-03/2) Add a `flash` target that depends on build/firmware.elf and runs OpenOCD: openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program build/firmware.elf verify reset exit" [src: M1-03 step 2]
 
 .PHONY: t test-active test-all firmware size flash clean
