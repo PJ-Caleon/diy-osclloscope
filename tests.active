@@ -2,3 +2,4 @@
 # Example:  test_m1_01
 # @TODO(M1-03/3) Add the lines test_m1_01, test_m1_02 and test_m1_03 below, one per line, so CI runs exactly those tests. [src: M1-03 step 3]
 test_m1_01
+test_m1_02
