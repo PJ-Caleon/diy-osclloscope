@@ -35,8 +35,7 @@ int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t trie
 /* @TODO(M1-04/8) elapsed: card C6. How many ticks since start? One subtraction, unsigned. [src: M1-04 step 8, card C6] */
 uint32_t elapsed(uint32_t now, uint32_t start)
 {
-    (void)now; (void)start;
-    return 0;
+  return now-start;
 }
 
 /* @TODO(M1-04/9) reached: card C6. Has the deadline passed? Subtract first, then look at the sign. [src: M1-04 step 9, card C6] */
