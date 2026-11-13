@@ -1,2 +1,7 @@
-*.pdf
-.obsidian/*
+build/
+*.o
+*.elf
+*.bin
+*.map
+
+.obsidian/

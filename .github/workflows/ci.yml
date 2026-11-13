@@ -1,0 +1,10 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the active host tests
+        run: make test-active
+# @TODO(M1-03/4) Add a second job named `firmware` at the same indent level as host-tests: runs-on ubuntu-latest; steps: checkout, install gcc-arm-none-eabi with apt, run `make firmware` and `make size`. [src: M1-03 step 4]
