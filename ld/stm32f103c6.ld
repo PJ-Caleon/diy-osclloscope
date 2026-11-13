@@ -38,6 +38,14 @@ SECTIONS
 
 
 /* @TODO(M1-02/9) .bss section: RAM only. Mark _sbss at the start and _ebss at the end; include *(.bss*) and *(COMMON). [src: M1-02 step 9] */
+  .bss :
+  {
+    . = ALIGN(4);
+    _sbss = .;
+    *(.bss*)
+    . = ALIGN(4);
+    _ebss = .;
+  } > RAM 
 
   /DISCARD/ : { *(.ARM.exidx*) *(.comment) }
 }
