@@ -45,7 +45,10 @@ build/firmware.bin: build/firmware.elf
 firmware: build/firmware.elf build/firmware.bin
 size: build/firmware.elf
 	$(CROSS)size $<
+
 # @TODO(M1-03/2) Add a `flash` target that depends on build/firmware.elf and runs OpenOCD: openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program build/firmware.elf verify reset exit" [src: M1-03 step 2]
+flash: build/firmware.elf 
+	openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program build/firmware.elf verify reset exit"
 
 .PHONY: t test-active test-all firmware size flash clean
 clean:
