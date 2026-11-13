@@ -3,9 +3,9 @@
 
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-  uint32_t mask = (1u << width) - 1;
-  reg &= ~(mask << shift);
-  reg |= (value & mask) << shift;
+  volatile uint32_t mask = (1u << width) - 1u; // mask = 0xF
+  reg &= ~(mask << shift); // Go to digit position at left by 2^n = shift and change the value to F and compliment is 0 
+  reg |= (value & mask) << shift; // change the value of that bit with the value 
   return reg;
 }
 
@@ -16,29 +16,32 @@ unsigned pin_shift(unsigned pin)
 
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
-  volatile uint32_t *reg = (pin < 8) ? &g->CRL : &g->CRH;
+  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH;
   *reg = field_set(*reg, pin_shift(pin), 4u, nibble);
 }
 
 /* @TODO(M1-04/7) wait_flag: card C3. Poll until the bit is in the wanted state; give up after `tries` reads. [src: M1-04 step 7, card C3] */
 int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t tries)
 {
-    (void)reg; (void)mask; (void)want_set; (void)tries;
-    return -1;
+  while (tries--){
+    uint32_t is_set = ((*reg & mask) != 0u);
+    if (is_set == (want_set != 0)){
+      return 0;
+    }
+  }
+  return -1;
 }
 
 /* @TODO(M1-04/8) elapsed: card C6. How many ticks since start? One subtraction, unsigned. [src: M1-04 step 8, card C6] */
 uint32_t elapsed(uint32_t now, uint32_t start)
 {
-    (void)now; (void)start;
-    return 0;
+  return now-start;
 }
 
 /* @TODO(M1-04/9) reached: card C6. Has the deadline passed? Subtract first, then look at the sign. [src: M1-04 step 9, card C6] */
 int reached(uint32_t now, uint32_t deadline)
 {
-    (void)now; (void)deadline;
-    return 0;
+  return (int32_t)(now - deadline) >= 0;
 }
 
 /* @TODO(M1-05/1) brr_for: USART divisor = pclk / baud, rounded to nearest. [src: M1-05 step 1] */
