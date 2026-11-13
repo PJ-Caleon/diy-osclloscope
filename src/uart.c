@@ -25,5 +25,8 @@ void uart_putc(char c)
 /* @TODO(M1-05/6) uart_puts: call uart_putc for each character until the NUL at the end. [src: M1-05 step 6] */
 void uart_puts(const char *s)
 {
-    (void)s;
+  while (*s){
+    uart_putc(*s);
+    s++;
+  }
 }
