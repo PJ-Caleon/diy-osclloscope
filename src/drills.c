@@ -23,11 +23,11 @@ void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 /* @TODO(M1-04/7) wait_flag: card C3. Poll until the bit is in the wanted state; give up after `tries` reads. [src: M1-04 step 7, card C3] */
 int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t tries)
 {
-  while (tries--){
-    uint32_t is_set = ((*reg & mask) != 0u);
-    if (is_set == (want_set != 0)){
-      return 0;
-    }
+  while(tries--){
+    int is_set = ((*reg & mask) != 0u);
+      if(is_set == (want_set != 0)){
+        return 0;
+      }
   }
   return -1;
 }
@@ -35,7 +35,7 @@ int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t trie
 /* @TODO(M1-04/8) elapsed: card C6. How many ticks since start? One subtraction, unsigned. [src: M1-04 step 8, card C6] */
 uint32_t elapsed(uint32_t now, uint32_t start)
 {
-  return now-start;
+  return now - start;
 }
 
 /* @TODO(M1-04/9) reached: card C6. Has the deadline passed? Subtract first, then look at the sign. [src: M1-04 step 9, card C6] */
@@ -47,8 +47,7 @@ int reached(uint32_t now, uint32_t deadline)
 /* @TODO(M1-05/1) brr_for: USART divisor = pclk / baud, rounded to nearest. [src: M1-05 step 1] */
 uint32_t brr_for(uint32_t pclk_hz, uint32_t baud)
 {
-    (void)pclk_hz; (void)baud;
-    return 0;
+  return (pclk_hz + baud / 2u) / baud;
 }
 
 /* @TODO(M2-01/1) mul_div: card C5. Multiply first in 64 bits, divide last. [src: M2-01 step 1, card C5] */
