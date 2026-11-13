@@ -3,9 +3,9 @@
 
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-  uint32_t mask = (1u << width) - 1;
-  reg &= ~(mask << shift);
-  reg |= (value & mask) << shift;
+  volatile uint32_t mask = (1u << width) - 1u; // mask = 0xF
+  reg &= ~(mask << shift); // Go to digit position at left by 2^n = shift and change the value to F and compliment is 0 
+  reg |= (value & mask) << shift; // change the value of that bit with the value 
   return reg;
 }
 
@@ -16,7 +16,7 @@ unsigned pin_shift(unsigned pin)
 
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
-  volatile uint32_t *reg = (pin < 8) ? &g->CRL : &g->CRH;
+  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH;
   *reg = field_set(*reg, pin_shift(pin), 4u, nibble);
 }
 
