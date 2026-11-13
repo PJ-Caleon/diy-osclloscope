@@ -1,7 +1,6 @@
 /* drills.c - the small formulas that come back all project long (pattern cards C1..C6). */
 #include "drills.h"
 
-/* @TODO(M1-01/6) field_set: card C1. Clear the field with a mask, then set the new value. [src: M1-01 step 6, card C1] */
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
     uint32_t mask = (1u << width) - 1u;
@@ -10,7 +9,6 @@ uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
     return reg;
 }
 
-/* @TODO(M1-01/7) pin_shift: card C2. Position of a pin's 4-bit nibble inside CRL or CRH. [src: M1-01 step 7, card C2] */
 unsigned pin_shift(unsigned pin)
 {
   // 8 pins per register
@@ -23,7 +21,12 @@ unsigned pin_shift(unsigned pin)
 /* @TODO(M1-01/8) gpio_cfg: card C2. Pick CRL (pin < 8) or CRH, then write the nibble with field_set. [src: M1-01 step 8, cards C1+C2] */
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
-    (void)g; (void)pin; (void)nibble;
+  // if pin 13, nibble 2
+  // 13 is greater than 8, so CRH 
+  // pin shift: (13%8)*4 = 20 
+  // value = nibble 
+  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH; 
+  *reg = field_set(*reg, pin_shift(pin), 4u, nibble);
 }
 
 /* @TODO(M1-04/7) wait_flag: card C3. Poll until the bit is in the wanted state; give up after `tries` reads. [src: M1-04 step 7, card C3] */
