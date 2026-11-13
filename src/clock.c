@@ -31,7 +31,9 @@ int clock_init(void)
   }
 
   /* @TODO(M1-04/3) Flash needs 2 wait states above 48 MHz: write FLASH->ACR with LATENCY field (shift 0, width 3) = 2 using card C1, plus the PRFTBE bit. Do this BEFORE the clock goes up. [src: M1-04 step 3, card C1] */
-    /* @TODO(M1-04/4) Write CFGR = clock_cfgr_word(); set PLLON and wait for PLLRDY; then switch SW (shift 0, width 2) to 2 with card C1 and wait for SWS_PLL (bit 3). [src: M1-04 step 4, cards C1+C3] */
+  FLASH->ACR = field_set(FLASH->ACR, FLASH_ACR_LATENCY_Pos, 3, 2) | FLASH_ACR_PRFTBE;
+
+  /* @TODO(M1-04/4) Write CFGR = clock_cfgr_word(); set PLLON and wait for PLLRDY; then switch SW (shift 0, width 2) to 2 with card C1 and wait for SWS_PLL (bit 3). [src: M1-04 step 4, cards C1+C3] */
   /* @TODO(M1-04/5) SysTick: LOAD = tick_reload(SYSCLK_HZ, 1000), VAL = 0, CTRL = ENABLE | TICKINT | CLKSRC. [src: M1-04 step 5] */
   SYSTICK->LOAD = tick_reload(SYSCLK_HZ, 1000u);
   SYSTICK->VAL = 0u;
