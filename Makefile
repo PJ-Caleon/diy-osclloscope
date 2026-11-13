@@ -28,6 +28,11 @@ test-all:
 
 # ---------------- firmware (M1-02 and M1-03) ----------------
 # @TODO(M1-02/10) Fill the 5 variables: CROSS = arm-none-eabi-  ; CPU = -mcpu=cortex-m3 -mthumb ; CFLAGS (CPU, -Os -g -std=gnu11 -Wall -Wextra -ffreestanding -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections -Iinclude) ; LDFLAGS (CPU, -nostdlib -T ld/stm32f103c6.ld -Wl,-Map=build/firmware.map -Wl,--gc-sections) ; FW_SRC = every .c file in src/. [src: M1-02 step 10]
+CROSS = arm-none-eabi-
+CPU = -mcpu=cortex-m3 -mthumb
+CFLAGS = $(CPU) -Os -g -std=null -Wall -Wextra -ffreestanding -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections -Iinclude
+LDFLAGS = $(CPU) -nostdlib -T ld/stm32f103c6.ld -Wl, -Map=build/firmware.map -Wl, --gc-sections 
+FW_SRC = $(wildcard src/*.c)
 
 # @TODO(M1-02/11) Write the rule for build/firmware.elf (compile all FW_SRC and link; end the link line with -lgcc), the rule for build/firmware.bin (objcopy -O binary), and the phony targets `firmware` and `size`. [src: M1-02 step 11]
 
