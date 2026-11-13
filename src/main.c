@@ -20,8 +20,14 @@ int main(void)
   led_init(); 
 
   uint32_t next = millis() + 500u;
-    /* @TODO(M1-05/7) After clock_init(): call uart_init(), build the banner with banner_build() into a char buffer and send it with uart_puts(). [src: M1-05 step 7] */
-    /* @TODO(M2-01/6) Every 500 ms: adc_read(), convert with adc_to_mv(), print "raw=... mv=..." with fmt_u32 and uart_puts. [src: M2-01 step 6] */
+  
+  /* @TODO(M1-05/7) After clock_init(): call uart_init(), build the banner with banner_build() into a char buffer and send it with uart_puts(). [src: M1-05 step 7] */
+  uart_init();
+  char b[40];
+  banner_build(b);
+  uart_puts(b);
+
+  /* @TODO(M2-01/6) Every 500 ms: adc_read(), convert with adc_to_mv(), print "raw=... mv=..." with fmt_u32 and uart_puts. [src: M2-01 step 6] */
     /* @TODO(M2-02/7) Call sampler_init(); sampler_start(32000); sampler_wait(); print the first 8 samples of g_cap over UART. [src: M2-02 step 7] */
     /* @TODO(M2-03/5) Call pwm_init() and pwm_set_duty(25); capture, count samples above 2048 with count_above() and print the count. [src: M2-03 step 5] */
     /* @TODO(M3-01/5) Call i2c_init(); run i2c_scan() and print every address found as a number (0x3C = 60). [src: M3-01 step 5] */
