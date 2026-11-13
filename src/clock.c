@@ -41,7 +41,7 @@ int clock_init(void)
     return -1;
   }
 
-  RCC->CFGR = field_set(RCC->CFGR, RCC_CFGR_SWS_PLL, 2, 2);
+  RCC->CFGR = field_set(RCC->CFGR, RCC_CFGR_SW_Pos, 2, 2);
   if (wait_flag(&RCC->CFGR, RCC_CFGR_SWS_PLL, 1, WAIT_TRIES) != 0){
     return -1;
   }
