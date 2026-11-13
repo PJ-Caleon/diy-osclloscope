@@ -35,7 +35,9 @@ static unsigned put_str(char *out, const char *s)
 /* @TODO(M1-05/3) banner_build: out = "SCOPE v0.1 clk=" + decimal SYSCLK_HZ + "\r\n". Use put_str and fmt_u32; each returns a length, so advance the write position. [src: M1-05 step 3] */
 void banner_build(char *out)
 {
-    out[0] = 0;
+  unsigned n = put_str(out, "SCOPE v0.1 clk=");
+  n += fmt_u32(out + n, SYSCLK_HZ);
+  put_str(out + n, "\r\n");
 }
 
 /* two decimals: 100 -> "1.00" ; writes whole + '.' + 2 digits, returns length. v is in hundredths. */
