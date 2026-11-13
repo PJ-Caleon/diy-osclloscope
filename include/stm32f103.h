@@ -1,4 +1,3 @@
-/* stm32f103.h - register map for the STM32F103C6T6 (only what the scope needs). */
 #ifndef STM32F103_H
 #define STM32F103_H
 #include <stdint.h>
@@ -8,9 +7,8 @@
 #define SYSCLK_HZ 72000000u
 
 /* ---------- base addresses ---------- */
-/* @TODO(M1-01/1) Define GPIOC_BASE (0x40011000) and RCC_BASE (0x40021000): one #define each, like GPIOA_BASE below. [src: M1-01 step 1] */
-#define GPIOC_BASE 0u
-#define RCC_BASE   0u
+#define GPIOC_BASE   0x40011000u 
+#define RCC_BASE     0x40021000u 
 #define GPIOA_BASE   0x40010800u
 #define GPIOB_BASE   0x40010C00u
 #define TIM2_BASE    0x40000000u
@@ -30,18 +28,21 @@ typedef struct {
     volatile uint32_t IDR;   /* 0x08 */
     volatile uint32_t ODR;   /* 0x0C */
     volatile uint32_t BSRR;  /* 0x10 */
-    /* @TODO(M1-01/2) Add BRR (offset 0x14) and LCKR (offset 0x18) here, one line each, same style as BSRR. [src: M1-01 step 2] */
+    volatile uint32_t BRR;   /* 0x14 */
+    volatile uint32_t LCKR;  /* 0x18 */
 } GPIO_TypeDef;
 
 /* ---------- RCC ---------- */
 typedef struct {
     volatile uint32_t CR;        /* 0x00 */
     volatile uint32_t CFGR;      /* 0x04 */
-    /* @TODO(M1-01/3) Add CIR (0x08), APB2RSTR (0x0C), APB1RSTR (0x10) here, one line each. [src: M1-01 step 3] */
+    volatile uint32_t CIR;       /* 0x08 */
+    volatile uint32_t APB2RSTR;  /* 0x0C */
+    volatile uint32_t APB1RSTR;  /* 0x10 */
     volatile uint32_t AHBENR;    /* 0x14 */
     volatile uint32_t APB2ENR;   /* 0x18 */
     volatile uint32_t APB1ENR;   /* 0x1C */
-    /* @TODO(M1-01/4) Add BDCR (offset 0x20) here, one line. [src: M1-01 step 4] */
+    volatile uint32_t BDCR;      /* 0x20 */
     volatile uint32_t CSR;       /* 0x24 */
 } RCC_TypeDef;
 
@@ -91,9 +92,8 @@ extern RCC_TypeDef  fake_rcc;
 #define FLASH   ((FLASH_TypeDef *)FLASH_BASE_R)
 
 /* ---------- bit names ---------- */
-/* @TODO(M1-01/5) Define RCC_APB2ENR_IOPCEN as bit 4 (use BIT(4)) and LED_PIN as 13u. Two lines. [src: M1-01 step 5] */
-#define RCC_APB2ENR_IOPCEN 0u
-#define LED_PIN 0u
+#define RCC_APB2ENR_IOPCEN BIT(4) 
+#define LED_PIN 13u
 /* RCC CR */
 #define RCC_CR_HSEON     BIT(16)
 #define RCC_CR_HSERDY    BIT(17)

@@ -4,7 +4,9 @@
 /* @TODO(M1-01/6) field_set: card C1. Clear the field with a mask, then set the new value. [src: M1-01 step 6, card C1] */
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-    (void)shift; (void)width; (void)value;
+    uint32_t mask = (1u << width) - 1u;
+    reg &= ~(mask << shift);
+    reg |= (value & mask) << shift;
     return reg;
 }
 
