@@ -18,6 +18,12 @@ SECTIONS
   } > FLASH
 
 /* @TODO(M1-02/7) .text section: code and read-only data, live in FLASH. Put *(.text*) and *(.rodata*) inside, then ALIGN(4). [src: M1-02 step 7] */
+  .text :
+  {
+    *(.text*)
+    *(.rodata*)
+    . = ALIGN(4);
+  } > FLASH
 
 /* @TODO(M1-02/8) .data section: lives in RAM but is STORED in FLASH (> RAM AT> FLASH). Mark _sdata at the start and _edata at the end; _sidata = LOADADDR(.data). [src: M1-02 step 8] */
 
