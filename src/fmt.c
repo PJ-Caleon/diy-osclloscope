@@ -5,9 +5,23 @@
 /* @TODO(M1-05/2) fmt_u32: write v as decimal. Collect digits with v % 10 into a small array (they come out backwards), then copy them out in reverse. Zero prints "0". [src: M1-05 step 2] */
 unsigned fmt_u32(char *out, uint32_t v)
 {
-    (void)v;
-    out[0] = 0;
-    return 0;
+  /*
+   * v = 123 
+   * tmp = '3','2','1'
+   * out = "123"
+   * */
+  char tmp[10]; // 10 digits for uint32 
+  unsigned n = 0, len = 0;
+  do {
+    tmp[n++] = (char)('0' + (v % 10u)); // Last digit as a letter 
+    v /= 10u;                           // drop the last digit 
+  } while (v != 0u);
+
+  while (n > 0u){
+    out[len++] = tmp[--n];              // copy out, reversed 
+  }
+  out[len] = 0;
+  return len;
 }
 
 static unsigned put_str(char *out, const char *s)
