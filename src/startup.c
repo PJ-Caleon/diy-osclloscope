@@ -22,8 +22,8 @@ typedef void (*isr_t)(void);
 __attribute__((section(".isr_vector"), used))
 const isr_t vectors[16] = {
     /* @TODO(M1-02/4) Slot 0 = initial stack pointer: the ADDRESS of _estack, cast to isr_t. Slot 1 = Reset_Handler. Slot 15 = SysTick_Handler. [src: M1-02 step 4] */
-    0,                     /* 0  initial stack pointer */
-    0,                     /* 1  reset                 */
+    (isr_t)&_estack,       /* 0  initial stack pointer */
+    Reset_Handler,         /* 1  reset                 */
     NMI_Handler,           /* 2  NMI           */
     HardFault_Handler,     /* 3  HardFault     */
     MemManage_Handler,     /* 4  MemManage     */
@@ -34,13 +34,16 @@ const isr_t vectors[16] = {
     DebugMon_Handler,      /* 12 DebugMon      */
     0,                     /* 13 reserved      */
     PendSV_Handler,        /* 14 PendSV        */
-    0,                     /* 15 SysTick       */
+    SysTick_Handler,       /* 15 SysTick       */
 };
 
 /* @TODO(M1-02/3) Reset_Handler: copy .data from Flash to RAM, zero .bss, call main(). Use copy_words and zero_words with the linker symbols. [src: M1-02 step 3] */
 void Reset_Handler(void)
 {
-    for (;;) { }
+  copy_words(&_sdata, &_edata, &_sidata);
+  zero_words(&_sbss, &_ebss);
+  main();
+  for (;;){}
 }
 
 void Default_Handler(void)

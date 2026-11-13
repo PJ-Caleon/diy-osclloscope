@@ -3,28 +3,20 @@
 
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-    uint32_t mask = (1u << width) - 1u;
-    reg &= ~(mask << shift);
-    reg |= (value & mask) << shift;
-    return reg;
+  uint32_t mask = (1 << width) - 1;
+  reg &= ~(mask << shift);
+  reg |= (value & mask) << shift;
+  return reg;
 }
 
 unsigned pin_shift(unsigned pin)
 {
-  // 8 pins per register
-  // 4 bits per pin
-  // if pin 7, 7%8*4 = 28 
-  // if pin 8, 8%8*4 = 0
-  return (pin % 8u) * 4u; 
+  return (pin % 8)*4u;
 }
 
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
-  // if pin 13, nibble 2
-  // 13 is greater than 8, so CRH 
-  // pin shift: (13%8)*4 = 20 
-  // value = nibble 
-  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH; 
+  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH;
   *reg = field_set(*reg, pin_shift(pin), 4u, nibble);
 }
 
