@@ -57,9 +57,10 @@ int clock_init(void)
 /* @TODO(M1-04/6) SysTick_Handler adds 1 to g_ms. millis() returns g_ms. [src: M1-04 step 6] */
 void SysTick_Handler(void)
 {
+  g_ms++;
 }
 
 uint32_t millis(void)
 {
-    return 0;
+  return g_ms;
 }
