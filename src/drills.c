@@ -13,8 +13,11 @@ uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 /* @TODO(M1-01/7) pin_shift: card C2. Position of a pin's 4-bit nibble inside CRL or CRH. [src: M1-01 step 7, card C2] */
 unsigned pin_shift(unsigned pin)
 {
-    (void)pin;
-    return 0;
+  // 8 pins per register
+  // 4 bits per pin
+  // if pin 7, 7%8*4 = 28 
+  // if pin 8, 8%8*4 = 0
+  return (pin % 8u) * 4u; 
 }
 
 /* @TODO(M1-01/8) gpio_cfg: card C2. Pick CRL (pin < 8) or CRH, then write the nibble with field_set. [src: M1-01 step 8, cards C1+C2] */
