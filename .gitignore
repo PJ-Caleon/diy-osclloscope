@@ -5,3 +5,8 @@ build/
 *.map
 
 .obsidian/
+.github/workflows
+third_party/
+*.pdf
+*.zip 
+test.active
