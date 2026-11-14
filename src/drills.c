@@ -3,9 +3,9 @@
 
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-  volatile uint32_t mask = (1u << width) - 1u; // mask = 0xF
-  reg &= ~(mask << shift); // Go to digit position at left by 2^n = shift and change the value to F and compliment is 0 
-  reg |= (value & mask) << shift; // change the value of that bit with the value 
+  uint32_t mask = (1 << width) - 1;
+  reg &= ~(mask << shift);
+  reg |= (value & mask) << shift;
   return reg;
 }
 
@@ -25,9 +25,9 @@ int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t trie
 {
   while(tries--){
     int is_set = ((*reg & mask) != 0u);
-      if(is_set == (want_set != 0)){
-        return 0;
-      }
+    if (is_set == (want_set != 0u)){
+      return 0;
+    }
   }
   return -1;
 }
@@ -47,21 +47,19 @@ int reached(uint32_t now, uint32_t deadline)
 /* @TODO(M1-05/1) brr_for: USART divisor = pclk / baud, rounded to nearest. [src: M1-05 step 1] */
 uint32_t brr_for(uint32_t pclk_hz, uint32_t baud)
 {
-  return (pclk_hz + baud / 2u) / baud;
+  return (pclk_hz + baud / 2) / baud;
 }
 
 /* @TODO(M2-01/1) mul_div: card C5. Multiply first in 64 bits, divide last. [src: M2-01 step 1, card C5] */
 uint32_t mul_div(uint32_t a, uint32_t b, uint32_t c)
 {
-    (void)a; (void)b; (void)c;
-    return 0;
+  return (uint32_t)(((uint64_t)a*b)/c);
 }
 
 /* @TODO(M2-01/2) smpr_field: card C2 in disguise. Shift of channel N's 3-bit sample-time field. [src: M2-01 step 2, card C2] */
 unsigned smpr_field(unsigned channel)
 {
-    (void)channel;
-    return 0;
+  return (channel < 10u) ? channel * 3u : (channel - 10u) * 3u;
 }
 
 /* @TODO(M3-01/1) i2c_ccr: CCR divisor for I2C. Standard mode: pclk/(2*scl). Fast mode (DUTY 0): pclk/(3*scl). [src: M3-01 step 1] */

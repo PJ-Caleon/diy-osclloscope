@@ -28,13 +28,22 @@ int main(void)
   uart_puts(b);
 
   /* @TODO(M2-01/6) Every 500 ms: adc_read(), convert with adc_to_mv(), print "raw=... mv=..." with fmt_u32 and uart_puts. [src: M2-01 step 6] */
-    /* @TODO(M2-02/7) Call sampler_init(); sampler_start(32000); sampler_wait(); print the first 8 samples of g_cap over UART. [src: M2-02 step 7] */
+  adc_init();
+
+  /* @TODO(M2-02/7) Call sampler_init(); sampler_start(32000); sampler_wait(); print the first 8 samples of g_cap over UART. [src: M2-02 step 7] */
     /* @TODO(M2-03/5) Call pwm_init() and pwm_set_duty(25); capture, count samples above 2048 with count_above() and print the count. [src: M2-03 step 5] */
     /* @TODO(M3-01/5) Call i2c_init(); run i2c_scan() and print every address found as a number (0x3C = 60). [src: M3-01 step 5] */
     /* @TODO(M3-02/7) Call ssd1306_init(i2c_write); set a few pixels with fb_pixel; ssd1306_flush(). [src: M3-02 step 7] */
     /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
   for (;;) { 
     if (reached(millis(), next)){
+      uint16_t raw;
+      char t[12];
+      if (adc_read(&raw) == 0){
+        uart_puts("raw="); fmt_u32(t, raw); uart_puts(t);
+        uart_puts(" mv="); fmt_u32(t, adc_to_mv(raw)); uart_puts(t);
+        uart_puts("\r\n");
+      }
       led_toggle();
       next += 500u;
     }
