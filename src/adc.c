@@ -36,6 +36,5 @@ int adc_read(uint16_t *out)
 /* @TODO(M2-01/5) adc_to_mv: raw counts (0..4095) to millivolts (0..3300) with mul_div, card C5. [src: M2-01 step 5, card C5] */
 uint32_t adc_to_mv(uint32_t raw)
 {
-    (void)raw;
-    return 0;
+  return mul_div(raw, 3300u, 4095u);
 }
