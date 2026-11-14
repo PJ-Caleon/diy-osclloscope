@@ -59,8 +59,7 @@ uint32_t mul_div(uint32_t a, uint32_t b, uint32_t c)
 /* @TODO(M2-01/2) smpr_field: card C2 in disguise. Shift of channel N's 3-bit sample-time field. [src: M2-01 step 2, card C2] */
 unsigned smpr_field(unsigned channel)
 {
-    (void)channel;
-    return 0;
+  return (channel < 10u) ? channel * 3u : (channel - 10u) * 3u;
 }
 
 /* @TODO(M3-01/1) i2c_ccr: CCR divisor for I2C. Standard mode: pclk/(2*scl). Fast mode (DUTY 0): pclk/(3*scl). [src: M3-01 step 1] */
