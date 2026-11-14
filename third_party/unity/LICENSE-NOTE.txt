@@ -1,3 +1,0 @@
-This folder holds a minimal, Unity-compatible stand-in (unity.c, unity.h) so the repo builds offline.
-Upstream Unity: ThrowTheSwitch/Unity, MIT licence. If you copy the real src/unity.c, unity.h and unity_internals.h
-into this folder BEFORE you go offline, every test still builds unchanged.
