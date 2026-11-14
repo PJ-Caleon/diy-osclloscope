@@ -24,8 +24,13 @@ void adc_init(void)
 /* @TODO(M2-01/4) adc_read, card C3: set SWSTART in CR2, wait_flag on EOC (want set) with a timeout, then return ADC1->DR through *out. Reading DR clears EOC. Return 0 or -1. [src: M2-01 step 4, card C3] */
 int adc_read(uint16_t *out)
 {
-    (void)out;
+  ADC1->CR2 |= ADC_CR2_SWSTART;
+
+  if ((wait_flag(&ADC1->SR, ADC_SR_EOC, 1, 100000u)) != 0){
     return -1;
+  }
+  *out = (uint16_t)ADC1->DR;
+  return 0;
 }
 
 /* @TODO(M2-01/5) adc_to_mv: raw counts (0..4095) to millivolts (0..3300) with mul_div, card C5. [src: M2-01 step 5, card C5] */
