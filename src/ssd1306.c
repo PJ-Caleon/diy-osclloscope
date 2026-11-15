@@ -52,5 +52,27 @@ int ssd1306_init(bus_write_fn bus)
 /* @TODO(M3-02/6) ssd1306_flush: first send the 7-byte command write 00 21 00 7F 22 00 07. Then for page 0..7: build a 129-byte buffer (0x40, then the 128 bytes of g_fb starting at page*128) and send it. Return the first non-zero result, else 0. [src: M3-02 step 6] */
 int ssd1306_flush(void)
 {
-    return -1;
+  static const uint8_t cmd[7] = {
+    0x00, 0x21, 0x00, 0x7F, 0x22, 0x00, 0x07
+  };
+
+  uint8_t buf[129];
+
+  int r = s_bus(SSD1306_ADDR, cmd, sizeof cmd);
+  if (r != 0){
+    return r;
+  }
+
+  for (unsigned page = 0; page < 8u; page++){
+    buf[0] = 0x40;
+    for (unsigned i = 0; i < 128u; i++){
+      buf[i+1] = g_fb[page * 128u + i];
+    }  
+    r = s_bus(SSD1306_ADDR, buf, sizeof buf);
+    if (r != 0){
+      return r;
+    }
+  }
+
+  return 0;
 }
