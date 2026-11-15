@@ -65,6 +65,11 @@ int i2c_write(uint8_t addr, const uint8_t *buf, uint16_t len)
 /* @TODO(M3-01/4) i2c_scan: try every address 0x08..0x77 with a zero-length i2c_write; store each address that returns I2C_OK in found[] (up to max); return how many. [src: M3-01 step 4] */
 int i2c_scan(uint8_t *found, unsigned max)
 {
-    (void)found; (void)max;
-    return 0;
+  unsigned n = 0;
+  for (uint8_t a = 0x08; a <= 0x77; a++){
+    if (i2c_write(a, 0, 0) == I2C_OK && n < max){
+      found[n++] = a;
+    }
+  }
+  return (int)n;
 }
