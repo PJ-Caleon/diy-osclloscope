@@ -17,7 +17,7 @@ void pwm_init(void)
   gpio_cfg(GPIOA, 1u, 0xAu);
   TIM2->PSC = 71u;
   TIM2->ARR = 999u;
-  TIM2->CCMR1 = field_set(TIM2->CCMR1, TIM_CCMR1_OC2M_Pos,3u,6u) | TIM_CCMR1_OC2PE;
+  TIM2->CCMR1 = field_set(TIM2->CCMR1, TIM_CCMR1_OC2M_Pos ,3u, 6u) | TIM_CCMR1_OC2PE;
   TIM2->CCER |= TIM_CCER_CC2E;
   TIM2->CCR2 = pwm_ccr(999u, 50u);
   TIM2->EGR = TIM_EGR_UG;
@@ -34,7 +34,7 @@ void pwm_set_duty(uint32_t percent)
 unsigned count_above(const uint16_t *s, unsigned n, uint16_t thr)
 {
   unsigned count = 0;
-  for (int i = 0; i < n; i++){
+  for (unsigned i = 0; i < n; i++){
     if (s[i] > thr){
       count++;
     }
