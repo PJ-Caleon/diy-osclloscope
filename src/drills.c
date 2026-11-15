@@ -3,9 +3,9 @@
 
 uint32_t field_set(uint32_t reg, unsigned shift, unsigned width, uint32_t value)
 {
-  uint32_t mask = (1 << width) - 1;
+  uint32_t mask = (1u << width) - 1u;
   reg &= ~(mask << shift);
-  reg |= (value & mask) << shift;
+  reg |= (mask & value) << shift;
   return reg;
 }
 
@@ -23,9 +23,9 @@ void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 /* @TODO(M1-04/7) wait_flag: card C3. Poll until the bit is in the wanted state; give up after `tries` reads. [src: M1-04 step 7, card C3] */
 int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t tries)
 {
-  while(tries--){
-    int is_set = ((*reg & mask) != 0u);
-    if(is_set == (want_set != 0u)){
+  while (tries--){
+    uint32_t is_set = (*reg & mask) != 0u;
+    if (is_set == (want_set != 0u)){
       return 0;
     }
   }
@@ -66,21 +66,19 @@ unsigned smpr_field(unsigned channel)
 uint32_t i2c_ccr(uint32_t pclk_hz, uint32_t scl_hz, int fast)
 {
   // if fastmode is true, 3*scl, else 2*scl
-  return pclk_hz / ((fast ? 3u : 2u) * scl_hz);
+  return pclk_hz/ ((fast)? 3*scl_hz : 2*scl_hz);
 }
 
 /* @TODO(M3-02/1) fb_index: byte index of pixel (x,y) in the SSD1306 framebuffer: page*128 + x. [src: M3-02 step 1] */
 unsigned fb_index(unsigned x, unsigned y)
 {
-    (void)x; (void)y;
-    return 0;
+  return (y/8u) * 128u + x;
 }
 
 /* @TODO(M3-02/2) fb_bit: which bit inside that byte? Bit 0 is the top row of the page. [src: M3-02 step 2] */
 unsigned fb_bit(unsigned y)
 {
-    (void)y;
-    return 0;
+  return y % 8u;
 }
 
 /* @TODO(M3-03/1) clamp_i: force v into the range lo..hi. [src: M3-03 step 1] */
