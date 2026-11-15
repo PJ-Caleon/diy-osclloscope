@@ -28,8 +28,18 @@ void sampler_stop(void)
 
 void sampler_start(uint32_t fs_hz)
 {
-    /* @TODO(M2-02/3) Timer first: sampler_timing(fs_hz, ...) then PSC and ARR; CR2 MMS field (shift 4, width 3) = 2 with C1; EGR = UG to load the values; clear SR. [src: M2-02 step 3, card C1] */
-    /* @TODO(M2-02/4) DMA next: clear flags (IFCR = 0xF); CPAR = address of ADC1->DR; CMAR = address of g_cap; CNDTR = SAMPLE_COUNT; CCR = PSIZE 1 and MSIZE 1 (C1 twice) | MINC | EN. [src: M2-02 step 4, card C1] */
+  /* @TODO(M2-02/3) Timer first: sampler_timing(fs_hz, ...) then PSC and ARR; CR2 MMS field (shift 4, width 3) = 2 with C1; EGR = UG to load the values; clear SR. [src: M2-02 step 3, card C1] */
+  uint32_t psc, arr;
+  sampler_stop();
+
+  sampler_timing(fs_hz, &psc, &arr);
+  TIM3->PSC = psc;
+  TIM3->ARR = arr;
+  TIM3->CR2 = field_set(TIM3->CR2, TIM_CR2_MMS_Pos, 3u, 2u);
+  TIM3->EGR = TIM_EGR_UG; // Load PSC/ ARR now 
+  TIM3->SR = 0u;           // Clear update flag
+
+  /* @TODO(M2-02/4) DMA next: clear flags (IFCR = 0xF); CPAR = address of ADC1->DR; CMAR = address of g_cap; CNDTR = SAMPLE_COUNT; CCR = PSIZE 1 and MSIZE 1 (C1 twice) | MINC | EN. [src: M2-02 step 4, card C1] */
     /* @TODO(M2-02/5) Last: route the ADC to TIM3: CR2 EXTSEL field (shift 17, width 3) = 4 with C1, then set DMA and EXTTRIG; finally start the timer (CR1 CEN). [src: M2-02 step 5, card C1] */
 }
 
