@@ -12,7 +12,7 @@
 #include "ssd1306.h"
 #include "ui.h"
 #include "scope.h"
-
+#include "gfx.h"
 
 int main(void)
 {
@@ -44,13 +44,17 @@ int main(void)
   ssd1306_init(i2c_write);
   fb_clear();
 
-  for (unsigned i = 0; i <64u; i++){
-    fb_pixel(i,i,i);
+  uint16_t demo[128];
+
+  for (int i = 0; i < 128; i++){
+    demo[i] = ((i % 32) < 16) ? 4095 : 0;
   }
-  fb_pixel(0,0,1);
-  fb_pixel(127,0,1);
-  fb_pixel(0,63,1);
-  fb_pixel(127,63,1);
+
+  fb_clear();
+  text_draw(0,0,"SCOPE TEST");
+  draw_grid();
+  plot_wave(demo, 128, 1000);
+
   ssd1306_flush();
 
   /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
