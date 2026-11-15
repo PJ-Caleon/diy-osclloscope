@@ -8,29 +8,58 @@ uint16_t g_cap[SAMPLE_COUNT];
 /* @TODO(M2-02/1) sampler_timing: ticks = SYSCLK_HZ / fs_hz. The ARR register is only 16 bits, so psc = (ticks - 1) / 65536 and arr = ticks / (psc + 1) - 1. Write both results through the pointers. [src: M2-02 step 1] */
 void sampler_timing(uint32_t fs_hz, uint32_t *psc, uint32_t *arr)
 {
-    (void)fs_hz;
-    *psc = 0; *arr = 0;
+  uint32_t ticks = SYSCLK_HZ / fs_hz;
+  *psc = (ticks - 1u) / 65536u;
+  *arr = ticks / (*psc + 1u) - 1u;
 }
 
 /* @TODO(M2-02/2) sampler_init: enable the DMA1 clock (AHBENR bit 0) and the TIM3 clock (APB1ENR bit 1). [src: M2-02 step 2] */
 void sampler_init(void)
 {
+  RCC->AHBENR |= RCC_AHBENR_DMA1EN;
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 }
 
 void sampler_stop(void)
 {
+  TIM3->CR1 &= ~TIM_CR1_CEN;
+  DMA1->ch[0].CCR &= ~DMA_CCR_EN;
 }
 
 void sampler_start(uint32_t fs_hz)
 {
-    /* @TODO(M2-02/3) Timer first: sampler_timing(fs_hz, ...) then PSC and ARR; CR2 MMS field (shift 4, width 3) = 2 with C1; EGR = UG to load the values; clear SR. [src: M2-02 step 3, card C1] */
-    /* @TODO(M2-02/4) DMA next: clear flags (IFCR = 0xF); CPAR = address of ADC1->DR; CMAR = address of g_cap; CNDTR = SAMPLE_COUNT; CCR = PSIZE 1 and MSIZE 1 (C1 twice) | MINC | EN. [src: M2-02 step 4, card C1] */
-    /* @TODO(M2-02/5) Last: route the ADC to TIM3: CR2 EXTSEL field (shift 17, width 3) = 4 with C1, then set DMA and EXTTRIG; finally start the timer (CR1 CEN). [src: M2-02 step 5, card C1] */
+  /* @TODO(M2-02/3) Timer first: sampler_timing(fs_hz, ...) then PSC and ARR; CR2 MMS field (shift 4, width 3) = 2 with C1; EGR = UG to load the values; clear SR. [src: M2-02 step 3, card C1] */
+  uint32_t psc, arr;
+  sampler_stop();
+
+  sampler_timing(fs_hz, &psc, &arr);
+  TIM3->PSC = psc;
+  TIM3->ARR = arr;
+  TIM3->CR2 = field_set(TIM3->CR2, TIM_CR2_MMS_Pos, 3u, 2u);
+  TIM3->EGR = TIM_EGR_UG; // Load PSC/ ARR now 
+  TIM3->SR = 0u;           // Clear update flag
+
+  /* @TODO(M2-02/4) DMA next: clear flags (IFCR = 0xF); CPAR = address of ADC1->DR; CMAR = address of g_cap; CNDTR = SAMPLE_COUNT; CCR = PSIZE 1 and MSIZE 1 (C1 twice) | MINC | EN. [src: M2-02 step 4, card C1] */
+  DMA1->IFCR = 0xFu;
+  DMA1->ch[0].CPAR = (uint32_t)(uintptr_t)&ADC1->DR;
+  DMA1->ch[0].CMAR = (uint32_t)(uintptr_t)&g_cap;
+  DMA1->ch[0].CNDTR = SAMPLE_COUNT;
+  uint32_t ccr = field_set(0u, DMA_CCR_PSIZE_Pos, 2u, 1u);
+  ccr = field_set(ccr, DMA_CCR_MSIZE_Pos, 2u, 1u);
+  DMA1->ch[0].CCR = ccr | DMA_CCR_MINC | DMA_CCR_EN;
+
+  /* @TODO(M2-02/5) Last: route the ADC to TIM3: CR2 EXTSEL field (shift 17, width 3) = 4 with C1, then set DMA and EXTTRIG; finally start the timer (CR1 CEN). [src: M2-02 step 5, card C1] */
+  ADC1->CR2 = field_set(ADC1->CR2, ADC_CR2_EXTSEL_Pos, 3u, 4u);
+  ADC1->CR2 |= ADC_CR2_DMA | ADC_CR2_EXTTRIG;
+  TIM3->CR1 |= TIM_CR1_CEN;
 }
 
 /* @TODO(M2-02/6) sampler_wait, card C3: wait_flag on DMA1->ISR bit TCIF1 (want set) with `tries`; on success clear it with IFCR = TCIF1 and return 0. [src: M2-02 step 6, card C3] */
 int sampler_wait(uint32_t tries)
 {
-    (void)tries;
+  if (wait_flag(&DMA1->ISR, DMA_ISR_TCIF1, 1, tries)){
     return -1;
+  }
+  DMA1->IFCR = DMA_ISR_TCIF1;
+  return 0;
 }
