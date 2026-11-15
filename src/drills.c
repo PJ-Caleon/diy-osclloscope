@@ -84,6 +84,11 @@ unsigned fb_bit(unsigned y)
 /* @TODO(M3-03/1) clamp_i: force v into the range lo..hi. [src: M3-03 step 1] */
 int clamp_i(int v, int lo, int hi)
 {
-    (void)lo; (void)hi;
-    return v;
+  if (v < lo){
+    return lo;
+  }
+  if (v > hi){
+    return hi;
+  }
+  return v;
 }
