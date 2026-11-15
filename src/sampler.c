@@ -57,6 +57,9 @@ void sampler_start(uint32_t fs_hz)
 /* @TODO(M2-02/6) sampler_wait, card C3: wait_flag on DMA1->ISR bit TCIF1 (want set) with `tries`; on success clear it with IFCR = TCIF1 and return 0. [src: M2-02 step 6, card C3] */
 int sampler_wait(uint32_t tries)
 {
-    (void)tries;
+  if (wait_flag(&DMA1->ISR, DMA_ISR_TCIF1, 1, tries)){
     return -1;
+  }
+  DMA1->IFCR = DMA_ISR_TCIF1;
+  return 0;
 }
