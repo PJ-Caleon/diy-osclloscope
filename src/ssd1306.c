@@ -8,6 +8,9 @@ static bus_write_fn s_bus;
 /* @TODO(M3-02/3) fb_clear: set all 1024 bytes of g_fb to 0 (a for loop). [src: M3-02 step 3] */
 void fb_clear(void)
 {
+  for (unsigned i = 0; i < sizeof g_fb; i++){
+    g_fb[i] = 0;
+  }
 }
 
 /* @TODO(M3-02/4) fb_pixel: ignore x >= 128 or y >= 64. Otherwise find the byte with fb_index(x, y) and the bit with fb_bit(y); OR the bit in when on, AND its inverse when off. [src: M3-02 step 4, card C1] */
