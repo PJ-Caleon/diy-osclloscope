@@ -78,7 +78,7 @@ unsigned fb_index(unsigned x, unsigned y)
 /* @TODO(M3-02/2) fb_bit: which bit inside that byte? Bit 0 is the top row of the page. [src: M3-02 step 2] */
 unsigned fb_bit(unsigned y)
 {
-  return 7 % 8u;
+  return y % 8u;
 }
 
 /* @TODO(M3-03/1) clamp_i: force v into the range lo..hi. [src: M3-03 step 1] */
