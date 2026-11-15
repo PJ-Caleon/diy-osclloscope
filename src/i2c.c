@@ -22,7 +22,43 @@ void i2c_init(void)
 /* @TODO(M3-01/3) i2c_write, card C3 five times: wait BUSY clear; START and wait SB; send addr<<1 and wait ADDR or AF; on AF clear it, STOP, return NACK; read SR1 then SR2; send bytes (wait TXE each); wait BTF; STOP. Every wait that times out: STOP and return TIMEOUT. [src: M3-01 step 3, card C3] */
 int i2c_write(uint8_t addr, const uint8_t *buf, uint16_t len)
 {
-    (void)addr; (void)buf; (void)len;
+  if (wait_flag(&I2C1->SR2, I2C_SR2_BUSY, 0, I2C_TRIES) != 0){
+    return I2C_ERR_BUSY;
+  }
+  I2C1->CR1 |= I2C_CR1_START;
+
+  if (wait_flag(&I2C1->SR1, I2C_SR1_SB, 1, I2C_TRIES) != 0){
+    goto timeout;
+  }
+  I2C1->DR = (uint32_t)(addr << 1);
+
+  if (wait_flag(&I2C1->SR1, I2C_SR1_ADDR | I2C_SR1_AF, 1, I2C_TRIES) != 0){
+    goto timeout;
+  }
+
+  if (I2C1->SR1 & I2C_SR1_AF){
+    I2C1->SR1 &= ~I2C_SR1_AF;
+    I2C1->CR1 |= I2C_CR1_STOP;
+    return I2C_ERR_NACK;
+  }
+
+  (void)I2C1->SR1; (void)I2C1->SR2;
+  for (uint16_t i = 0; i < len; i++){
+    if (wait_flag(&I2C1->SR1, I2C_SR1_TXE, 1, I2C_TRIES) != 0){
+      goto timeout;
+    }
+    I2C1->DR = buf[i];
+  }
+
+  if (len > 0u && wait_flag(&I2C1->SR1, I2C_SR1_BTF, 1, I2C_TRIES) != 0){
+    goto timeout;
+  }
+
+  I2C1->CR1 |= I2C_CR1_STOP;
+  return I2C_OK;
+
+  timeout:
+    I2C1->CR1 |= I2C_CR1_STOP;
     return I2C_ERR_TIMEOUT;
 }
 
