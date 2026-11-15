@@ -49,6 +49,9 @@ void sampler_start(uint32_t fs_hz)
   DMA1->ch[0].CCR = ccr | DMA_CCR_MINC | DMA_CCR_EN;
 
   /* @TODO(M2-02/5) Last: route the ADC to TIM3: CR2 EXTSEL field (shift 17, width 3) = 4 with C1, then set DMA and EXTTRIG; finally start the timer (CR1 CEN). [src: M2-02 step 5, card C1] */
+  ADC1->CR2 = field_set(ADC1->CR2, ADC_CR2_EXTSEL_Pos, 3u, 4u);
+  ADC1->CR2 |= ADC_CR2_DMA | ADC_CR2_EXTTRIG;
+  TIM3->CR1 |= TIM_CR1_CEN;
 }
 
 /* @TODO(M2-02/6) sampler_wait, card C3: wait_flag on DMA1->ISR bit TCIF1 (want set) with `tries`; on success clear it with IFCR = TCIF1 and return 0. [src: M2-02 step 6, card C3] */
