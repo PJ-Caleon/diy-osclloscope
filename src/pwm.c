@@ -34,9 +34,10 @@ void pwm_set_duty(uint32_t percent)
 unsigned count_above(const uint16_t *s, unsigned n, uint16_t thr)
 {
   unsigned count = 0;
-  while (n > 0){
-    if (s* > thr){
+  for (int i = 0; i < n; i++){
+    if (s[i] > thr){
       count++;
     }
   }
+  return count;
 }
