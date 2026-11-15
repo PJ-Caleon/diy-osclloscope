@@ -41,7 +41,19 @@ int main(void)
   i2c_init(); 
 
   /* @TODO(M3-02/7) Call ssd1306_init(i2c_write); set a few pixels with fb_pixel; ssd1306_flush(). [src: M3-02 step 7] */
-    /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
+  ssd1306_init(i2c_write);
+  fb_clear();
+
+  for (unsigned i = 0; i <64u; i++){
+    fb_pixel(i,i,i);
+  }
+  fb_pixel(0,0,1);
+  fb_pixel(127,0,1);
+  fb_pixel(0,63,1);
+  fb_pixel(127,63,1);
+  ssd1306_flush();
+
+  /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
   for (;;) { 
     if (reached(millis(), next)){
       uint16_t raw;
