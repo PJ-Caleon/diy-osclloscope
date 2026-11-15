@@ -14,7 +14,7 @@ void i2c_init(void)
   gpio_cfg(GPIOB, 7u, 0xFu);
   I2C1->CR1 = 0u;
   I2C1->CR2 = field_set(I2C1->CR2, 0u, 6u, 36u);
-  I2C1->CR2 = I2C_CCR_FS | i2c_ccr(36000000u, 400000u, 1);
+  I2C1->CCR = I2C_CCR_FS | i2c_ccr(36000000u, 400000u, 1);
   I2C1->TRISE = 12u;
   I2C1->CR1 |= I2C_CR1_PE;
 }
