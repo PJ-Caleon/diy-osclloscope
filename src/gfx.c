@@ -6,6 +6,22 @@
 /* @TODO(M3-03/2) draw_grid: dots only. Horizontal lines at y = 16,24,32,40,48,56,63 with a dot every 4th x. Vertical lines at x = 0,16,...,112,127 with a dot on every even y from 16 to 63. [src: M3-03 step 2] */
 void draw_grid(void)
 {
+  static const uint8_t rows[7] = {
+    16, 24, 32, 40, 48,
+    56, 63
+  };
+
+  for (unsigned r = 0; r < 7u; r++){
+    for (unsigned x = 0; x < 128u; x += 4u){
+      fb_pixel(x, rows[r], 1);
+    }
+  }
+  for (unsigned k = 0; k < 9u; k++){
+    unsigned x = (k == 8u) ? 127u : k*16u;
+    for (unsigned y = 16; y < 64u; y += 2u){
+      fb_pixel(x,y,1);
+    }
+  }
 }
 
 /* @TODO(M3-03/3) text_draw: for each character c (stop at NUL): glyph = font5x7[c - 32]. For col 0..4 and row 0..6, if bit `row` of glyph[col] is set, fb_pixel(x + col, y + row, 1). Then x += 6. Skip characters outside 32..126. [src: M3-03 step 3] */
