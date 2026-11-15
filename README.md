@@ -2,7 +2,7 @@
 
 <!-- TODO(M6-02/4) Replace this line with 2 sentences: what the project is and what it measures. Then fill in every section below (issue M6-02, step 4). -->
 
-[![ci](https://github.com/YOUR-NAME/scope-fw/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR-NAME/scope-fw/actions)
+[![ci](https://github.com/YOUR-NAME/scope-fw/actions/workflows/ci.yml/badge.svg)](https://github.com/Pj-Caleon/diy-oscilloscope/actions)
 
 ## Hardware
 (parts list and pin map)
