@@ -33,6 +33,10 @@ void pwm_set_duty(uint32_t percent)
 /* @TODO(M2-03/4) count_above: how many of the n samples are greater than thr? (loop, counter). [src: M2-03 step 4] */
 unsigned count_above(const uint16_t *s, unsigned n, uint16_t thr)
 {
-    (void)s; (void)n; (void)thr;
-    return 0;
+  unsigned count = 0;
+  while (n > 0){
+    if (s* > thr){
+      count++;
+    }
+  }
 }
