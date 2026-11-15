@@ -16,10 +16,14 @@ void sampler_timing(uint32_t fs_hz, uint32_t *psc, uint32_t *arr)
 /* @TODO(M2-02/2) sampler_init: enable the DMA1 clock (AHBENR bit 0) and the TIM3 clock (APB1ENR bit 1). [src: M2-02 step 2] */
 void sampler_init(void)
 {
+  RCC->AHBENR |= RCC_AHBENR_DMA1EN;
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 }
 
 void sampler_stop(void)
 {
+  TIM3->CR1 &= ~TIM_CR1_CEN;
+  DMA1->ch[0].CCR &= ~DMA_CCR_EN;
 }
 
 void sampler_start(uint32_t fs_hz)
