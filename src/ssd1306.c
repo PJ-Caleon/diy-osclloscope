@@ -30,11 +30,23 @@ void fb_pixel(unsigned x, unsigned y, int on)
 }
 
 /* @TODO(M3-02/5) init_seq: type the 25 init bytes from the cheat sheet, in order. ssd1306_init: remember the bus, build a 26-byte buffer = 0x00 control byte + init_seq, send it to SSD1306_ADDR with the bus function, return its result. [src: M3-02 step 5] */
-static const uint8_t init_seq[] = { 0x00 };
+static const uint8_t init_seq[] = {
+  0xAE, 0xD5, 0x80, 0xA8, 0x3F, 
+  0xD3, 0x00, 0x40, 0x8D, 0x14, 
+  0x20, 0x00, 0xA1, 0xC8, 0xDA,
+  0x12, 0x81, 0xCF, 0xD9, 0xF1,
+  0xDB, 0x40, 0xA4, 0xA6, 0xAF
+};
+
 int ssd1306_init(bus_write_fn bus)
 {
-    (void)bus;
-    return -1;
+  uint8_t buf[1 + sizeof init_seq];
+  s_bus = bus;
+  buf[0] = 0x00;
+  for (unsigned i = 0; i < sizeof init_seq; i++){
+    buf[1+i] = init_seq[i];
+  }
+  return s_bus(SSD1306_ADDR, buf, (uint16_t)sizeof buf);
 }
 
 /* @TODO(M3-02/6) ssd1306_flush: first send the 7-byte command write 00 21 00 7F 22 00 07. Then for page 0..7: build a 129-byte buffer (0x40, then the 128 bytes of g_fb starting at page*128) and send it. Return the first non-zero result, else 0. [src: M3-02 step 6] */
