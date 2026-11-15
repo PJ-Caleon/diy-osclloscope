@@ -6,8 +6,7 @@
 /* @TODO(M2-03/1) pwm_ccr: compare value = (arr + 1) * percent / 100, with mul_div (card C5). [src: M2-03 step 1, card C5] */
 uint32_t pwm_ccr(uint32_t arr, uint32_t percent)
 {
-    (void)arr; (void)percent;
-    return 0;
+  return mul_div(arr+1, percent, 100u);
 }
 
 /* @TODO(M2-03/2) pwm_init, card C4: clock (GPIOA + TIM2), pin (PA1 nibble 0xA), configure (PSC 71, ARR 999, CCMR1 OC2M field shift 12 width 3 = 6, OC2PE, CCER CC2E), start (EGR UG, CR1 CEN). [src: M2-03 step 2, cards C1+C2+C4] */

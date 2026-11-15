@@ -25,7 +25,7 @@ int wait_flag(volatile uint32_t *reg, uint32_t mask, int want_set, uint32_t trie
 {
   while(tries--){
     int is_set = ((*reg & mask) != 0u);
-    if (is_set == (want_set != 0u)){
+    if(is_set == (want_set != 0u)){
       return 0;
     }
   }
@@ -53,7 +53,7 @@ uint32_t brr_for(uint32_t pclk_hz, uint32_t baud)
 /* @TODO(M2-01/1) mul_div: card C5. Multiply first in 64 bits, divide last. [src: M2-01 step 1, card C5] */
 uint32_t mul_div(uint32_t a, uint32_t b, uint32_t c)
 {
-  return (uint64_t)a*b/c;
+  return (uint32_t)(((uint64_t)a*b)/c);
 }
 
 /* @TODO(M2-01/2) smpr_field: card C2 in disguise. Shift of channel N's 3-bit sample-time field. [src: M2-01 step 2, card C2] */
