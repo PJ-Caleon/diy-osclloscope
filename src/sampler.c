@@ -8,8 +8,9 @@ uint16_t g_cap[SAMPLE_COUNT];
 /* @TODO(M2-02/1) sampler_timing: ticks = SYSCLK_HZ / fs_hz. The ARR register is only 16 bits, so psc = (ticks - 1) / 65536 and arr = ticks / (psc + 1) - 1. Write both results through the pointers. [src: M2-02 step 1] */
 void sampler_timing(uint32_t fs_hz, uint32_t *psc, uint32_t *arr)
 {
-    (void)fs_hz;
-    *psc = 0; *arr = 0;
+  uint32_t ticks = SYSCLK_HZ / fs_hz;
+  *psc = (ticks - 1u) / 65536u;
+  *arr = ticks / (*psc + 1u) - 1u;
 }
 
 /* @TODO(M2-02/2) sampler_init: enable the DMA1 clock (AHBENR bit 0) and the TIM3 clock (APB1ENR bit 1). [src: M2-02 step 2] */
