@@ -27,7 +27,7 @@ void pwm_init(void)
 /* @TODO(M2-03/3) pwm_set_duty: write CCR2 = pwm_ccr(ARR, percent). [src: M2-03 step 3] */
 void pwm_set_duty(uint32_t percent)
 {
-    (void)percent;
+  TIM2->CCR2 = pwm_ccr(TIM2->ARR, percent);
 }
 
 /* @TODO(M2-03/4) count_above: how many of the n samples are greater than thr? (loop, counter). [src: M2-03 step 4] */
