@@ -16,7 +16,17 @@ void fb_clear(void)
 /* @TODO(M3-02/4) fb_pixel: ignore x >= 128 or y >= 64. Otherwise find the byte with fb_index(x, y) and the bit with fb_bit(y); OR the bit in when on, AND its inverse when off. [src: M3-02 step 4, card C1] */
 void fb_pixel(unsigned x, unsigned y, int on)
 {
-    (void)x; (void)y; (void)on;
+  if (x >= 128u || y >= 64u){
+    return;
+  }
+
+  unsigned i = fb_index(x,y);
+  uint8_t m = (uint8_t)(1u << fb_bit(y));
+  if (on){
+    g_fb[i] |= m;
+  } else{
+    g_fb[i] &= (uint8_t)~m;
+  }
 }
 
 /* @TODO(M3-02/5) init_seq: type the 25 init bytes from the cheat sheet, in order. ssd1306_init: remember the bus, build a 26-byte buffer = 0x00 control byte + init_seq, send it to SSD1306_ADDR with the bus function, return its result. [src: M3-02 step 5] */
