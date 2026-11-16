@@ -13,6 +13,7 @@
 #include "ui.h"
 #include "scope.h"
 #include "gfx.h"
+#include "trigger.h"
 
 int main(void)
 {
@@ -42,20 +43,7 @@ int main(void)
 
   /* @TODO(M3-02/7) Call ssd1306_init(i2c_write); set a few pixels with fb_pixel; ssd1306_flush(). [src: M3-02 step 7] */
   ssd1306_init(i2c_write);
-  fb_clear();
 
-  uint16_t demo[128];
-
-  for (int i = 0; i < 128; i++){
-    demo[i] = ((i % 32) < 16) ? 4095 : 0;
-  }
-
-  fb_clear();
-  text_draw(0,0,"SCOPE TEST");
-  draw_grid();
-  plot_wave(demo, 128, 1000);
-
-  ssd1306_flush();
 
   /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
   for (;;) { 
@@ -93,8 +81,22 @@ int main(void)
         uart_puts("high="); fmt_u32(t, high); uart_puts(t);
         uart_puts("\r\n");
       }
+
       led_toggle();
       next += 500u;
     }
+      
+    fb_clear();
+    text_draw(0,0,"M4-01");
+    char c[12];
+
+    int tr = trig_find(g_cap, 128u, mv_to_counts(1650u), 1);
+    uart_puts("trig="); fmt_u32(c, tr); uart_puts(c);
+    uart_puts("\r\n");
+    unsigned st = trig_start(tr);
+    draw_grid();
+    plot_wave(&g_cap[st], 128u, 1000u);
+
+    ssd1306_flush();
   }
 }
