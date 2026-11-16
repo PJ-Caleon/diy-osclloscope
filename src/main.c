@@ -88,9 +88,12 @@ int main(void)
       
     fb_clear();
     text_draw(0,0,"M4-01");
+    char c[12];
 
-    int t = trig_find(g_cap, 128u, mv_to_counts(165u), 0);
-    unsigned st = trig_start(t);
+    int tr = trig_find(g_cap, 128u, mv_to_counts(1650u), 1);
+    uart_puts("trig="); fmt_u32(c, tr); uart_puts(c);
+    uart_puts("\r\n");
+    unsigned st = trig_start(tr);
     draw_grid();
     plot_wave(&g_cap[st], 128u, 1000u);
 

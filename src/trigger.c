@@ -11,12 +11,10 @@ uint16_t mv_to_counts(uint32_t mv)
 /* @TODO(M4-01/2) trig_find: for i = 1 .. n_scan-1 return the first i where the signal crosses the level. Rising: s[i-1] < level and s[i] >= level. Falling: s[i-1] >= level and s[i] < level. Return -1 if none. [src: M4-01 step 2] */
 int trig_find(const uint16_t *s, unsigned n_scan, uint16_t level, int rising)
 {
-  for (int i = 0; i < n_scan; i++){
+  for (unsigned i = 1; i < n_scan; i++){
     if (rising){
       if (s[i-1] < level && s[i] >= level){
-        if (i != 0){
-          return (int)i;
-        }
+        return (int)i;
       }
     } else{
       if (s[i-1] >= level && s[i] < level){
