@@ -14,10 +14,12 @@ int trig_find(const uint16_t *s, unsigned n_scan, uint16_t level, int rising)
   for (int i = 0; i < n_scan; i++){
     if (rising){
       if (s[i-1] < level && s[i] >= level){
-        return (int)i;
+        if (i != 0){
+          return (int)i;
+        }
       }
     } else{
-      if (s[i-1] > level && s[i] < level){
+      if (s[i-1] >= level && s[i] < level){
         return (int)i;
       }
     }
@@ -28,6 +30,8 @@ int trig_find(const uint16_t *s, unsigned n_scan, uint16_t level, int rising)
 /* @TODO(M4-01/3) trig_start: where does the window start? The trigger index, or 0 when there was no trigger (idx < 0 = auto mode). [src: M4-01 step 3] */
 unsigned trig_start(int idx)
 {
-    (void)idx;
+  if (idx < 0){
     return 0;
+  }
+  return (unsigned)idx;
 }
