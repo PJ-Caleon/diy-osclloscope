@@ -113,7 +113,7 @@ void buttons_init(void)
   RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
   gpio_cfg(GPIOB, 12u, 0x8u);
   gpio_cfg(GPIOB, 13u, 0x8u);
-  gpio_cfg(GPIOB, 14u, 0x80);
+  gpio_cfg(GPIOB, 14u, 0x8u);
   GPIOB->BSRR = BIT(12u) | BIT(13u) | BIT(14u);
 }
 
