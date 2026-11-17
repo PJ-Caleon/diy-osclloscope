@@ -55,19 +55,26 @@ int debounce_update(debounce_t *d, int raw, uint32_t now_ms)
 }
 
 /* @TODO(M4-03/2) The seven action functions: tdiv up/down (step_index +1/-1, max 7), vdiv up/down (max 2), level up/down (+100/-100 mV, clamp_i to 0..3300), edge toggle (rising becomes the opposite). [src: M4-03 step 2, drill clamp_i] */
-static void act_tdiv_up(ui_t *u)   { (void)u;
+static void act_tdiv_up(ui_t *u)   {
+  u->tdiv_idx = step_index(u->tdiv_idx, 1, TDIV_COUNT - 1);
 }
-static void act_tdiv_down(ui_t *u) { (void)u;
+static void act_tdiv_down(ui_t *u) {
+  u->tdiv_idx = step_index(u->tdiv_idx, -1, TDIV_COUNT - 1);
 }
-static void act_vdiv_up(ui_t *u)   { (void)u;
+static void act_vdiv_up(ui_t *u)   {
+  u->vdiv_idx = step_index(u->vdiv_idx, 1, VDIV_COUNT - 1);
 }
-static void act_vdiv_down(ui_t *u) { (void)u;
+static void act_vdiv_down(ui_t *u) {
+  u->vdiv_idx = step_index(u->vdiv_idx, -1, VDIV_COUNT - 1);
 }
-static void act_level_up(ui_t *u)  { (void)u;
+static void act_level_up(ui_t *u)  {
+  u->level_mv = clamp_i(u->level_mv + 100, 0, 3300);
 }
-static void act_level_down(ui_t *u){ (void)u;
+static void act_level_down(ui_t *u){
+  u->level_mv = clamp_i(u->level_mv - 100, 0, 3300);
 }
-static void act_edge_toggle(ui_t *u){ (void)u;
+static void act_edge_toggle(ui_t *u){
+  u->rising = !u->rising;
 }
 
 typedef struct { ui_mode_t mode; ui_event_t ev; void (*action)(ui_t *); ui_mode_t next; } ui_row_t;
@@ -89,7 +96,15 @@ static const ui_row_t ui_table[] = {
 /* @TODO(M4-03/3) ui_handle: loop over ui_table; for the row whose mode == u->mode and ev == ev: call action if it is not NULL, then set u->mode = next, and stop. [src: M4-03 step 3] */
 void ui_handle(ui_t *u, ui_event_t ev)
 {
-    (void)u; (void)ev;
+  for (unsigned i = 0; i < sizeof ui_table/ sizeof ui_table[0]; i++){
+    if (ui_table[i].mode == u->mode && ui_table[i].ev == ev){
+      if (ui_table[i].action != NULL){
+        ui_table[i].action(u);
+      }
+      u->mode = ui_table[i].next;
+      return;
+    }
+  }
 }
 
 /* @TODO(M4-03/4) buttons_init, card C2 three times: clock GPIOB; pins 12, 13, 14 nibble 0x8 (input with pull); then set ODR bits 12..14 high through BSRR to select the pull-UP. [src: M4-03 step 4, cards C2+C4] */
