@@ -5,30 +5,37 @@
 #include <stddef.h>
 
 /* @TODO(M4-02/1) tdiv_us: the 8 time/div values in microseconds, from the cheat sheet (100 first, 20000 last). [src: M4-02 step 1] */
-const uint32_t tdiv_us[TDIV_COUNT] = { 1 };
+const uint32_t tdiv_us[TDIV_COUNT] = { 
+  100, 200, 500, 1000,
+  2000, 5000, 10000, 20000
+};
 /* @TODO(M4-02/2) vdiv_mv: the 3 volts/div values in millivolts (1000, 500, 250). [src: M4-02 step 2] */
-const uint32_t vdiv_mv[VDIV_COUNT] = { 1 };
+const uint32_t vdiv_mv[VDIV_COUNT] = { 
+  1000, 500, 250
+};
 const char *const tdiv_label[TDIV_COUNT] = { "100us", "200us", "500us", "1ms", "2ms", "5ms", "10ms", "20ms" };
 const char *const vdiv_label[VDIV_COUNT] = { "1V", "500mV", "250mV" };
 
 /* @TODO(M4-02/3) tdiv_to_fs: sample rate = 16 pixels per division / time per division. fs = 16 * 1,000,000 / tdiv_us[idx], with mul_div (card C5). [src: M4-02 step 3, card C5] */
 uint32_t tdiv_to_fs(int tdiv_idx)
 {
-    (void)tdiv_idx;
-    return 0;
+  return mul_div(16u, 1000000u, tdiv_us[tdiv_idx]);
 }
 
 /* @TODO(M4-02/4) ui_init: mode M_TDIV, tdiv_idx 3, vdiv_idx 0, level_mv 1650, rising 1. [src: M4-02 step 4] */
 void ui_init(ui_t *u)
 {
-    (void)u;
+  u->mode = M_TDIV;
+  u->tdiv_idx = 3;
+  u->vdiv_idx = 0;
+  u->level_mv = 1650;
+  u->rising = 1;
 }
 
 /* @TODO(M4-02/5) step_index: idx + delta, forced into 0..max with clamp_i. [src: M4-02 step 5, drill clamp_i] */
 int step_index(int idx, int delta, int max)
 {
-    (void)delta; (void)max;
-    return idx;
+  return clamp_i(idx + delta, 0, max);
 }
 
 /* @TODO(M4-03/1) debounce_update: raw (0/1). If raw differs from d->last: remember it and the time, return 0. Else if raw differs from d->stable and elapsed(now, t_change) >= DEBOUNCE_MS: stable = raw, return raw (1 = a new press). Otherwise return 0. [src: M4-03 step 1, card C6] */
