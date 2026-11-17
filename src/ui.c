@@ -110,6 +110,11 @@ void ui_handle(ui_t *u, ui_event_t ev)
 /* @TODO(M4-03/4) buttons_init, card C2 three times: clock GPIOB; pins 12, 13, 14 nibble 0x8 (input with pull); then set ODR bits 12..14 high through BSRR to select the pull-UP. [src: M4-03 step 4, cards C2+C4] */
 void buttons_init(void)
 {
+  RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+  gpio_cfg(GPIOB, 12u, 0x8u);
+  gpio_cfg(GPIOB, 13u, 0x8u);
+  gpio_cfg(GPIOB, 14u, 0x80);
+  GPIOB->BSRR = BIT(12u) | BIT(13u) | BIT(14u);
 }
 
 /* @TODO(M4-03/5) buttons_read: return a 3-bit mask, bit 0 = MODE (PB12), bit 1 = UP (PB13), bit 2 = DOWN (PB14), a 1 meaning PRESSED. Buttons are active-low, so invert IDR first: ((~IDR) >> 12) & 7. [src: M4-03 step 5] */
