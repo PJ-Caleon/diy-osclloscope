@@ -41,8 +41,17 @@ int step_index(int idx, int delta, int max)
 /* @TODO(M4-03/1) debounce_update: raw (0/1). If raw differs from d->last: remember it and the time, return 0. Else if raw differs from d->stable and elapsed(now, t_change) >= DEBOUNCE_MS: stable = raw, return raw (1 = a new press). Otherwise return 0. [src: M4-03 step 1, card C6] */
 int debounce_update(debounce_t *d, int raw, uint32_t now_ms)
 {
-    (void)d; (void)raw; (void)now_ms;
+  raw = (raw != 0);
+  if (raw != d->last){
+    d->last = (uint8_t)raw;
+    d->t_change = now_ms;
     return 0;
+  }
+  if (raw != d->stable && elapsed(now_ms, d->t_change) >= 20u){
+    d->stable = (uint8_t)raw;
+    return raw;
+  }
+  return 0;
 }
 
 /* @TODO(M4-03/2) The seven action functions: tdiv up/down (step_index +1/-1, max 7), vdiv up/down (max 2), level up/down (+100/-100 mV, clamp_i to 0..3300), edge toggle (rising becomes the opposite). [src: M4-03 step 2, drill clamp_i] */
