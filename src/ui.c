@@ -35,8 +35,7 @@ void ui_init(ui_t *u)
 /* @TODO(M4-02/5) step_index: idx + delta, forced into 0..max with clamp_i. [src: M4-02 step 5, drill clamp_i] */
 int step_index(int idx, int delta, int max)
 {
-    (void)delta; (void)max;
-    return idx;
+  return clamp_i(idx + delta, 0, max);
 }
 
 /* @TODO(M4-03/1) debounce_update: raw (0/1). If raw differs from d->last: remember it and the time, return 0. Else if raw differs from d->stable and elapsed(now, t_change) >= DEBOUNCE_MS: stable = raw, return raw (1 = a new press). Otherwise return 0. [src: M4-03 step 1, card C6] */
