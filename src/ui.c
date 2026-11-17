@@ -19,8 +19,7 @@ const char *const vdiv_label[VDIV_COUNT] = { "1V", "500mV", "250mV" };
 /* @TODO(M4-02/3) tdiv_to_fs: sample rate = 16 pixels per division / time per division. fs = 16 * 1,000,000 / tdiv_us[idx], with mul_div (card C5). [src: M4-02 step 3, card C5] */
 uint32_t tdiv_to_fs(int tdiv_idx)
 {
-    (void)tdiv_idx;
-    return 0;
+  return mul_div(16u, 1000000u, tdiv_us[tdiv_idx]);
 }
 
 /* @TODO(M4-02/4) ui_init: mode M_TDIV, tdiv_idx 3, vdiv_idx 0, level_mv 1650, rising 1. [src: M4-02 step 4] */
