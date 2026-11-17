@@ -5,7 +5,10 @@
 #include <stddef.h>
 
 /* @TODO(M4-02/1) tdiv_us: the 8 time/div values in microseconds, from the cheat sheet (100 first, 20000 last). [src: M4-02 step 1] */
-const uint32_t tdiv_us[TDIV_COUNT] = { 1 };
+const uint32_t tdiv_us[TDIV_COUNT] = { 
+  100, 200, 500, 1000,
+  2000, 5000, 10000, 20000
+};
 /* @TODO(M4-02/2) vdiv_mv: the 3 volts/div values in millivolts (1000, 500, 250). [src: M4-02 step 2] */
 const uint32_t vdiv_mv[VDIV_COUNT] = { 1 };
 const char *const tdiv_label[TDIV_COUNT] = { "100us", "200us", "500us", "1ms", "2ms", "5ms", "10ms", "20ms" };
