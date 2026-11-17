@@ -114,11 +114,11 @@ void buttons_init(void)
   gpio_cfg(GPIOB, 12u, 0x8u);
   gpio_cfg(GPIOB, 13u, 0x8u);
   gpio_cfg(GPIOB, 14u, 0x8u);
-  GPIOB->BSRR = BIT(12u) | BIT(13u) | BIT(14u);
+  GPIOB->BSRR = BIT(12) | BIT(13) | BIT(14);
 }
 
 /* @TODO(M4-03/5) buttons_read: return a 3-bit mask, bit 0 = MODE (PB12), bit 1 = UP (PB13), bit 2 = DOWN (PB14), a 1 meaning PRESSED. Buttons are active-low, so invert IDR first: ((~IDR) >> 12) & 7. [src: M4-03 step 5] */
 uint8_t buttons_read(void)
 {
-    return 0;
+  return (uint8_t)(((~GPIOB->IDR) >> 12) & 7u);
 }
