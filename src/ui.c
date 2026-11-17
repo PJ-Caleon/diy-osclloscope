@@ -25,7 +25,11 @@ uint32_t tdiv_to_fs(int tdiv_idx)
 /* @TODO(M4-02/4) ui_init: mode M_TDIV, tdiv_idx 3, vdiv_idx 0, level_mv 1650, rising 1. [src: M4-02 step 4] */
 void ui_init(ui_t *u)
 {
-    (void)u;
+  u->mode = M_TDIV;
+  u->tdiv_idx = 3;
+  u->vdiv_idx = 0;
+  u->level_mv = 1650;
+  u->rising = 1;
 }
 
 /* @TODO(M4-02/5) step_index: idx + delta, forced into 0..max with clamp_i. [src: M4-02 step 5, drill clamp_i] */
