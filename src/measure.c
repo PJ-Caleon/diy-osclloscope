@@ -36,6 +36,19 @@ uint32_t stats_avg_mv(const stats_t *st)
 /* @TODO(M5-02/1) measure_freq: scan i = 1..n-1 for rising crossings (s[i-1] < level and s[i] >= level). Remember the first index, the last index and the count. With fewer than 2 crossings return 0. Else hz = mul_div(fs_hz, count - 1, last - first) (card C5). [src: M5-02 step 1, card C5] */
 uint32_t measure_freq(const uint16_t *s, unsigned n, uint16_t level, uint32_t fs_hz)
 {
-    (void)s; (void)n; (void)level; (void)fs_hz;
+  unsigned first = 0, last = 0, count = 0;
+
+  for (unsigned i = 1; i < n; i++){
+    if (s[i-1] < level && s[i] >= level){
+      if (count == 0){
+        first = i;
+      }
+      last = i;
+      count++;
+    }
+  }
+  if (count < 2){
     return 0;
+  }
+  return mul_div(fs_hz, count - 1, last - first);
 }
