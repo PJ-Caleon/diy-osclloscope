@@ -72,5 +72,12 @@ void scope_header(const scope_t *sc, char *line1, char *line2)
 /* @TODO(M6-01/3) scope_draw: fb_clear(); header lines at (0,0) and (0,8) with text_draw; draw_grid(); plot_wave(cap + start, 128, vdiv_mv[ui.vdiv_idx]). Do not flush here. [src: M6-01 step 3] */
 void scope_draw(const scope_t *sc)
 {
-    (void)sc;
+  char line1[32], line2[32];
+
+  fb_clear();
+  scope_header(sc, line1, line2);
+  text_draw(0,0, line1);
+  text_draw(0,8,line2);
+  draw_grid();
+  plot_wave(sc->cap + sc->start, 128, vdiv_mv[sc->ui.vdiv_idx]);
 }
