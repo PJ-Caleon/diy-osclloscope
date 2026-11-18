@@ -65,7 +65,16 @@ unsigned fmt_mv(char *out, uint32_t mv)
 /* @TODO(M5-02/3) fmt_hz: below 1000 Hz print the number then "Hz" (800 -> "800Hz"). From 1000 Hz up: v = (hz + 5) / 10, put_hundredths(out, v), then "kHz" (1000 -> "1.00kHz"). [src: M5-02 step 3] */
 unsigned fmt_hz(char *out, uint32_t hz)
 {
-    (void)hz;
-    out[0] = 0;
-    return 0;
+  unsigned n;
+  if (hz < 1000){
+    n = fmt_u32(out, hz);
+    put_str(out + n, "Hz");
+    n = n + 2;
+  } else{
+    hz = (hz + 5)/ 10;
+    n = put_hundredths(out, hz);
+    put_str(out + n, "kHz");
+    n = n+3;
+  }
+  return n;
 }
