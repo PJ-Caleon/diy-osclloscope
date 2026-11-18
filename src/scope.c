@@ -24,7 +24,18 @@ void scope_init(scope_t *sc)
 /* @TODO(M6-02/3) Calibration hook: at the very top of scope_process, run every sample through cal_apply(&g_cal, ...) in place (a loop over 256). [src: M6-02 step 3] */
 void scope_process(scope_t *sc)
 {
-    (void)sc;
+  unsigned level = mv_to_counts(sc->ui.level_mv);
+  sc->trig = trig_find(sc->cap, 128u, level, sc->ui.rising);
+  sc->start = trig_start(sc->trig);
+  measure_stats(sc->cap, 256, &sc->st);
+
+  unsigned mid = (sc->st.min + sc->st.max)/ 2;
+
+  if (sc->st.max - sc->st.min >= 100){
+    sc->freq_hz = measure_freq(sc->cap, 256, mid, tdiv_to_fs(sc->ui.tdiv_idx));
+  } else{
+    sc->freq_hz = 0;
+  }
 }
 
 /* @TODO(M6-01/2) scope_header: line1 = tdiv_label + ' ' + vdiv_label + ' ' + fmt_hz(freq) + ' ' + 'R' or 'F'. line2 = mode letter (one of "TVLE" picked by ui.mode) + ' ' + 'p' + fmt_mv(vpp) + ' ' + 'a' + fmt_mv(avg). Example: "1ms 1V 1.00kHz R" and "T p3.30V a0.82V". [src: M6-01 step 2] */
