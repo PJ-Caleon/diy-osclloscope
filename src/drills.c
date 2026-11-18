@@ -16,7 +16,7 @@ unsigned pin_shift(unsigned pin)
 
 void gpio_cfg(GPIO_TypeDef *g, unsigned pin, unsigned nibble)
 {
-  volatile uint32_t *reg = (pin < 8u) ? &g->CRL : &g->CRH;
+  volatile uint32_t *reg = (pin < 8u)? &g->CRL : &g->CRH;
   *reg = field_set(*reg, pin_shift(pin), 4u, nibble);
 }
 
