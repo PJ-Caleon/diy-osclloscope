@@ -3,7 +3,7 @@
 #include "drills.h"
 
 /* @TODO(M6-02/5) After you measure (issue M6-02 steps 5 and 6) replace the two numbers below with yours: offset = counts with PA2 on GND, span = (counts on 3V3) minus (counts on GND). [src: M6-02 step 5] */
-cal_t g_cal = { 0, 4095 };
+cal_t g_cal = { 17, 4068 };
 
 /* @TODO(M6-02/1) cal_fit: if raw_3v3 < raw_gnd + 2000 return -1 (the readings make no sense). Otherwise offset = raw_gnd, span = raw_3v3 - raw_gnd, return 0. [src: M6-02 step 1] */
 int cal_fit(cal_t *c, uint16_t raw_gnd, uint16_t raw_3v3)
@@ -12,7 +12,7 @@ int cal_fit(cal_t *c, uint16_t raw_gnd, uint16_t raw_3v3)
     return -1;
   } else{
     c->offset = raw_gnd;
-    c->span = (uint16_t)raw_3v3 - raw_gnd;
+    c->span = (uint16_t)(raw_3v3 - raw_gnd);
   }
   return 0;
 }
