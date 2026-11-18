@@ -5,8 +5,21 @@
 /* @TODO(M5-01/1) measure_stats: one pass over s[0..n-1]: track min, track max, add up a uint32_t sum; avg = sum / n. [src: M5-01 step 1] */
 void measure_stats(const uint16_t *s, unsigned n, stats_t *st)
 {
-    (void)s; (void)n;
-    st->min = 0; st->max = 0; st->avg = 0;
+  uint32_t mn = s[0], mx = s[0];
+  uint32_t sum = 0;
+
+  for (unsigned i = 0; i < n; i++){
+    if (s[i] < mn){
+      mn = s[i];
+    }
+    if (s[i] > mx){
+      mx = s[i];
+    }
+    sum += s[i];
+  }
+  st->min = mn;
+  st->max = mx;
+  st->avg = sum / (int32_t)n;
 }
 
 /* @TODO(M5-01/2) stats_vpp_mv = (max - min) counts to mV with mul_div(.., 3300, 4095); stats_avg_mv = avg counts to mV the same way. [src: M5-01 step 2, card C5] */
