@@ -23,6 +23,6 @@ uint16_t cal_apply(const cal_t *c, uint16_t raw)
   if (raw <= c->offset){
     return 0;
   } else{
-    return (uint16_t)clamp_i(mul_div(c->raw - c->offset, 4095, c->span),0,4095);
+    return (uint16_t)clamp_i(mul_div(raw - c->offset, 4095, c->span),0,4095);
   }
 }
