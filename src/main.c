@@ -15,13 +15,18 @@
 #include "gfx.h"
 #include "trigger.h"
 
+static scope_t g_scope;
+static debounce_t g_deb[3];
+
+void start_capture(void){
+  sampler_start(tdiv_to_fs(g_scope.ui.tdiv_idx));
+}
+
 int main(void)
 {
   clock_init();
   led_init(); 
 
-  uint32_t next = millis() + 500u;
-  
   /* @TODO(M1-05/7) After clock_init(): call uart_init(), build the banner with banner_build() into a char buffer and send it with uart_puts(). [src: M1-05 step 7] */
   uart_init();
   char b[40];
@@ -44,59 +49,36 @@ int main(void)
   /* @TODO(M3-02/7) Call ssd1306_init(i2c_write); set a few pixels with fb_pixel; ssd1306_flush(). [src: M3-02 step 7] */
   ssd1306_init(i2c_write);
 
-
   /* @TODO(M6-01/4) Final super loop: init everything, then forever: poll buttons -> ui_handle; if the capture is done: scope_process, scope_draw, ssd1306_flush, start the next capture. [src: M6-01 step 4] */
+  buttons_init();
+  scope_init(&g_scope);
+
+  start_capture();
+  uint32_t next = millis() + 500u;
+
   for (;;) { 
-    if (reached(millis(), next)){
-      uint16_t raw;
-      char t[12];
-      unsigned high = 0;
-      uint32_t t0 = millis();
-      sampler_start(32000u);
-      int rc = sampler_wait(20000000u);
-      uint32_t dt = elapsed(millis(), t0);
+    uint32_t now = millis();
+    uint32_t raw = buttons_read();
 
-      uint8_t found[8];
-      int n = i2c_scan(found, 8);
-      if (n == 0){
-        uart_puts("i2c: nothing found\r\n");
-      } else{
-        for (int i = 0; i < n; i++){
-          uart_puts("i2c: "); fmt_u32(t, found[i]); uart_puts(t);
-          uart_puts("\r\n");
-        }
+    for (int i = 0; i < 3; i++){
+      unsigned bit = (raw >> i) & 1u;
+      if (debounce_update(&g_deb[i], bit, now)){
+        ui_handle(&g_scope.ui, (ui_event_t)(i+1));
+        start_capture();
       }
+    }
 
-      if (rc == 0){
-        high = count_above(g_cap, 256u, 2048u);
-      }
-      
-      if (adc_read(&raw) == 0){
-        uart_puts("raw="); fmt_u32(t, raw); uart_puts(t);
-        uart_puts(" mv="); fmt_u32(t, adc_to_mv(raw)); uart_puts(t);
-        uart_puts("\r\n");
-        uart_puts("rc="); fmt_u32(t, rc); uart_puts(t);
-        uart_puts(" dt="); fmt_u32(t, dt); uart_puts(t);
-        uart_puts("\r\n");
-        uart_puts("high="); fmt_u32(t, high); uart_puts(t);
-        uart_puts("\r\n");
-      }
+    if (sampler_wait(1u) == 0){
+      sampler_stop();
+      scope_process(&g_scope);
+      scope_draw(&g_scope);
+      ssd1306_flush();
+      start_capture();
+    }
 
+    if (reached(now, next) == 1u){
       led_toggle();
       next += 500u;
     }
-      
-    fb_clear();
-    text_draw(0,0,"M4-01");
-    char c[12];
-
-    int tr = trig_find(g_cap, 128u, mv_to_counts(1650u), 1);
-    uart_puts("trig="); fmt_u32(c, tr); uart_puts(c);
-    uart_puts("\r\n");
-    unsigned st = trig_start(tr);
-    draw_grid();
-    plot_wave(&g_cap[st], 128u, 1000u);
-
-    ssd1306_flush();
   }
 }
