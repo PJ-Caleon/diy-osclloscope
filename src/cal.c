@@ -20,6 +20,9 @@ int cal_fit(cal_t *c, uint16_t raw_gnd, uint16_t raw_3v3)
 /* @TODO(M6-02/2) cal_apply: if raw <= offset return 0. Else corrected = mul_div(raw - offset, 4095, span), forced into 0..4095 with clamp_i. [src: M6-02 step 2, card C5] */
 uint16_t cal_apply(const cal_t *c, uint16_t raw)
 {
-    (void)c;
-    return raw;
+  if (raw <= c->offset){
+    return 0;
+  } else{
+    return (uint16_t)clamp_i(mul_div(c->raw - c->offset, 4095, c->span),0,4095);
+  }
 }
