@@ -47,7 +47,7 @@ int reached(uint32_t now, uint32_t deadline)
 /* @TODO(M1-05/1) brr_for: USART divisor = pclk / baud, rounded to nearest. [src: M1-05 step 1] */
 uint32_t brr_for(uint32_t pclk_hz, uint32_t baud)
 {
-  return (pclk_hz + baud / 2) / baud;
+  return (pclk_hz + baud / 2)/baud;
 }
 
 /* @TODO(M2-01/1) mul_div: card C5. Multiply first in 64 bits, divide last. [src: M2-01 step 1, card C5] */
