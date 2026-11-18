@@ -54,9 +54,12 @@ static unsigned put_hundredths(char *out, uint32_t v)
 /* @TODO(M5-02/2) fmt_mv: millivolts as volts with 2 decimals, rounded to the nearest 10 mV: v = (mv + 5) / 10; then put_hundredths(out, v) and append 'V'. 3300 -> "3.30V". [src: M5-02 step 2] */
 unsigned fmt_mv(char *out, uint32_t mv)
 {
-    (void)mv;
-    out[0] = 0;
-    return 0;
+  unsigned v = (mv + 5)/10;
+  unsigned n = put_hundredths(out, v);
+  out[n] = 'V';
+  n = n+1;
+  out[n] = 0x00;
+  return n;
 }
 
 /* @TODO(M5-02/3) fmt_hz: below 1000 Hz print the number then "Hz" (800 -> "800Hz"). From 1000 Hz up: v = (hz + 5) / 10, put_hundredths(out, v), then "kHz" (1000 -> "1.00kHz"). [src: M5-02 step 3] */
