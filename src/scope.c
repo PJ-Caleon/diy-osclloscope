@@ -38,11 +38,35 @@ void scope_process(scope_t *sc)
   }
 }
 
-/* @TODO(M6-01/2) scope_header: line1 = tdiv_label + ' ' + vdiv_label + ' ' + fmt_hz(freq) + ' ' + 'R' or 'F'. line2 = mode letter (one of "TVLE" picked by ui.mode) + ' ' + 'p' + fmt_mv(vpp) + ' ' + 'a' + fmt_mv(avg). Example: "1ms 1V 1.00kHz R" and "T p3.30V a0.82V". [src: M6-01 step 2] */
+/* @TODO(M6-01/2) scope_header: line1 = tdiv_label + ' ' + vdiv_label + ' ' + fmt_hz(freq) + ' ' + 'R' or 'F'. 
+ * line2 = mode letter (one of "TVLE" picked by ui.mode) + ' ' + 'p' + fmt_mv(vpp) + ' ' + 'a' + fmt_mv(avg). Example: "1ms 1V 1.00kHz R" and "T p3.30V a0.82V". [src: M6-01 step 2] */
 void scope_header(const scope_t *sc, char *line1, char *line2)
 {
-    (void)sc;
-    line1[0] = 0; line2[0] = 0;
+  char *p = line1;
+  const char *s;
+
+  for (s = tdiv_label[sc->ui.tdiv_idx]; *s; s++){
+    *p++ = *s;
+  }
+  *p++ = ' ';
+
+  for (s = vdiv_label[sc->ui.vdiv_idx]; *s; s++){
+    *p++ = *s;
+  }
+  *p++ = ' ';
+  p += fmt_hz(p, sc->freq_hz);
+  *p++ = ' ';
+  *p++ = (sc->ui.rising)? 'R' : 'F';
+  *p = '\0';
+
+  p = line2;
+  *p++ = "TVLE"[sc->ui.mode];
+  *p++ = ' ';
+  *p++ = 'p';
+  p += fmt_mv(p, stats_vpp_mv(&sc->st));
+  *p++ = ' ';
+  *p++ = 'a';
+  p += fmt_mv(p, stats_avg_mv(&sc->st));
 }
 
 /* @TODO(M6-01/3) scope_draw: fb_clear(); header lines at (0,0) and (0,8) with text_draw; draw_grid(); plot_wave(cap + start, 128, vdiv_mv[ui.vdiv_idx]). Do not flush here. [src: M6-01 step 3] */
