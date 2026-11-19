@@ -41,7 +41,7 @@ int main(void)
 
   /* @TODO(M2-03/5) Call pwm_init() and pwm_set_duty(25); capture, count samples above 2048 with count_above() and print the count. [src: M2-03 step 5] */
   pwm_init();
-  pwm_set_duty(50u);
+  pwm_set_duty(25u);
 
   /* @TODO(M3-01/5) Call i2c_init(); run i2c_scan() and print every address found as a number (0x3C = 60). [src: M3-01 step 5] */
   i2c_init(); 

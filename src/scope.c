@@ -24,6 +24,10 @@ void scope_init(scope_t *sc)
 /* @TODO(M6-02/3) Calibration hook: at the very top of scope_process, run every sample through cal_apply(&g_cal, ...) in place (a loop over 256). [src: M6-02 step 3] */
 void scope_process(scope_t *sc)
 {
+  for (unsigned i = 0; i < SAMPLE_COUNT; i++){
+    sc->cap[i] = cal_apply(&g_cal, sc->cap[i]);
+  }
+
   unsigned level = mv_to_counts(sc->ui.level_mv);
   sc->trig = trig_find(sc->cap, 128u, level, sc->ui.rising);
   sc->start = trig_start(sc->trig);
