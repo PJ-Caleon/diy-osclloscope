@@ -64,7 +64,7 @@ The ADC does not read exactly 0 at 0V or 4095 at 3.3 V so the scope uses a two p
 - At slow time/div, the sample rate drops below twice the signal frequency so the samples form a false output
 
 ## Documentation 
-![601](img/demo.gif)
+![396](img/demo.gif)
 
 ![391](img/scr1.jpg)
 
