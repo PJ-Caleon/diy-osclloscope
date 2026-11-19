@@ -62,3 +62,10 @@ The ADC does not read exactly 0 at 0V or 4095 at 3.3 V so the scope uses a two p
 
 - The input must stay within 0V to 3.3V and there is no input protection, so a voltage outside this range can damage the board 
 - At slow time/div, the sample rate drops below twice the signal frequency so the samples form a false output
+
+## Documentation 
+![396](img/demo.gif)
+
+![391](img/scr1.jpg)
+
+![399](img/scr2.jpg)
